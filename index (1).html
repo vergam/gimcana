@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Gimcana — v50</title>
+<meta name="theme-color" content="#14120E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Gimcana">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14120E; --paper:#FBF7EF; --paper2:#F0E8D8;
+  --cobalt:#1E3FCC; --magenta:#F0286E; --canary:#FFC814; --verd:#0E8A5F;
+  --rule:rgba(20,18,14,.14);
+  --display:'Anton','Haettenschweiler','Arial Narrow',Impact,sans-serif;
+  --body:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  background-image:radial-gradient(rgba(20,18,14,.042) 1px,transparent 1px);background-size:7px 7px}
+#app{max-width:540px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;
+  border-left:1px solid var(--rule);border-right:1px solid var(--rule);background:var(--paper)}
+.topbar{position:sticky;top:0;z-index:20;background:var(--ink);color:var(--paper);
+  display:flex;align-items:center;justify-content:space-between;padding:9px 14px}
+.topbar .brand{font-family:var(--display);text-transform:uppercase;letter-spacing:.06em;font-size:15px}
+.topbar .brand em{font-style:normal;color:var(--canary)}
+.topbar .meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;opacity:.75;text-align:right}
+.main{flex:1;padding:22px 16px 118px}
+.footbar{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:center;
+  padding:12px 14px 16px;background:linear-gradient(to top,var(--paper) 55%,rgba(251,247,239,0))}
+.footbar-inner{width:100%;max-width:512px;display:flex;gap:8px}
+
+h1{font-family:var(--display);text-transform:uppercase;font-size:clamp(29px,9.5vw,44px);line-height:.92;margin:0 0 4px}
+h2{font-family:var(--display);text-transform:uppercase;font-size:17px;letter-spacing:.02em;margin:0 0 10px;line-height:1}
+.eyebrow{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--cobalt);margin:0 0 6px}
+.lede{font-size:14px;opacity:.72;margin:0 0 18px}
+.p14{font-size:14px;margin:0 0 16px}
+.mini{font-family:var(--mono);font-size:10px;letter-spacing:.05em;opacity:.55;margin:8px 0 4px;text-transform:uppercase}
+.hint{font-size:12.5px;opacity:.66;margin:9px 0 0;line-height:1.45}
+.link-sm{background:none;border:none;text-decoration:underline;font-size:12.5px;opacity:.75;padding:8px 0 0;cursor:pointer;display:block}
+.alerta-bg{position:fixed;inset:0;background:rgba(20,18,14,.82);display:flex;align-items:center;justify-content:center;
+  padding:20px;z-index:60}
+.alerta-box{background:var(--paper);border:2.5px solid var(--ink);box-shadow:6px 6px 0 var(--magenta);
+  padding:22px 20px;max-width:380px;text-align:center}
+.alerta-k{font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:12px;
+  color:var(--magenta);font-weight:700;margin:0 0 4px}
+.alerta-box h1{font-size:26px;margin:0 0 12px}
+.alerta-box p{font-size:14.5px;line-height:1.5;margin:0 0 10px}
+.alerta-box .btn-cta{width:100%;margin-top:6px}
+
+.cap{margin:0 0 30px}
+.titol-in{font-family:var(--display)!important;text-transform:uppercase;font-size:20px!important;
+  letter-spacing:.02em;margin:14px 0 0;border:2px solid var(--ink);background:var(--paper2);padding:11px 12px}
+.resum{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--cobalt);margin:12px 0 0;line-height:1.5}
+.bl{border-top:1.5px solid var(--ink);padding:16px 0 0;margin:0 0 30px}
+.bl>h2{margin:0 0 12px}
+.bl .row-input{margin-top:12px}
+.row-b{display:flex;gap:8px;margin-top:10px}
+
+/* material */
+.taula-t{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin-top:8px;
+  padding:11px 12px;border:1.5px solid var(--ink);background:var(--paper);font-size:13px;line-height:1.3}
+.taula-t .tick{width:19px;height:19px;flex:none;border:1.5px solid var(--ink);display:grid;place-items:center;
+  font-size:12px;font-weight:700;background:var(--paper)}
+.taula-t b{font-weight:700}
+.taula-t.on{background:var(--canary);font-weight:500}
+.taula-t.on .tick{background:var(--ink);color:var(--canary)}
+.pres{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.pres button{font-size:12px;padding:7px 12px;border-width:1.5px;font-weight:500}
+.pres button[aria-pressed=true]{background:var(--cobalt);color:var(--paper);font-weight:700}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+@media(max-width:360px){.mgrid{grid-template-columns:1fr}}
+.mat{display:flex;align-items:center;gap:9px;text-align:left;padding:10px 10px;font-size:13.5px;
+  border-width:1.5px;line-height:1.2}
+.mat .tick{width:19px;height:19px;flex:none;border:1.5px solid var(--ink);display:grid;place-items:center;
+  font-size:12px;font-weight:700;background:var(--paper)}
+.mat[aria-pressed=true]{background:var(--canary);font-weight:700}
+.mat[aria-pressed=true] .tick{background:var(--ink);color:var(--canary)}
+.senyal{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:14px 0 0;padding:9px 11px;
+  border-left:5px solid var(--rule);background:var(--paper2)}
+.senyal b{font-family:var(--display);text-transform:uppercase;font-size:13px;letter-spacing:.03em}
+.senyal span{font-size:12.5px;opacity:.72}
+.senyal.molt{border-left-color:var(--verd)}
+.senyal.be{border-left-color:var(--cobalt)}
+.senyal.just{border-left-color:var(--canary)}
+.senyal.poc{border-left-color:var(--magenta);background:#fff}
+
+/* durada */
+.durada{display:flex;align-items:baseline;gap:9px;margin:14px 0 0}
+.durada b{font-family:var(--display);font-size:26px;letter-spacing:-.01em;line-height:1}
+.durada span{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;opacity:.55}
+
+/* punts */
+.punts-f{display:flex;align-items:center;gap:10px;margin:12px 0 0;flex-wrap:wrap}
+.punts-f span{flex:1;font-size:13.5px;min-width:150px}
+
+/* proves sorpresa */
+.srp{display:flex;gap:12px;align-items:flex-start}
+.srp-i{font-family:var(--display);font-size:34px;line-height:1;width:50px;height:50px;flex:none;
+  display:grid;place-items:center;background:var(--canary);border:1.5px solid var(--ink)}
+.srp b{font-size:14px}
+.srp p{font-size:13px;margin:4px 0 0;opacity:.75}
+
+button{font-family:var(--body);font-size:15px;cursor:pointer;border:1.5px solid var(--ink);
+  background:var(--paper);color:var(--ink);padding:9px 14px;border-radius:0;font-weight:500}
+button:active{transform:translate(1px,1px)}
+button:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+button[disabled]{opacity:.35;cursor:not-allowed}
+.btn-cta{flex:1;background:var(--magenta);color:var(--paper);font-family:var(--display);
+  text-transform:uppercase;letter-spacing:.05em;font-size:19px;padding:15px 16px;box-shadow:4px 4px 0 var(--ink)}
+.btn-cta.alt{background:var(--cobalt)}
+.btn-cta.ghost{background:var(--paper);color:var(--ink)}
+.btn-cta[disabled]{box-shadow:none;background:var(--paper2);color:rgba(20,18,14,.5)}
+.btn-sm{font-size:12px;padding:5px 9px}
+.btn-icon{width:32px;height:32px;padding:0;display:grid;place-items:center;font-size:14px;line-height:1}
+
+input[type=text],input[type=number]{font-family:var(--body);font-size:16px;padding:9px 10px;
+  border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);width:100%;border-radius:0}
+input:focus-visible{outline:3px solid var(--cobalt);outline-offset:1px}
+.row-input{display:flex;gap:8px}
+.seg{display:flex;margin:0 0 10px;border:1.5px solid var(--ink);width:100%}
+.seg button{flex:1;border:0;border-right:1.5px solid var(--ink);background:var(--paper);font-size:12.5px;padding:9px 3px}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--cobalt);color:var(--paper);font-weight:700}
+
+.bib,.eq-d{font-family:var(--mono);font-weight:700;font-size:11px;display:grid;place-items:center;
+  min-width:22px;height:22px;background:var(--ink);color:var(--paper);flex:none}
+.eq-d{background:var(--c,var(--ink));color:#fff}
+.plist{display:flex;flex-direction:column;gap:6px}
+.pill .nm{font-size:14.5px}
+.pill{display:flex;align-items:center;gap:9px;border:1.5px solid var(--ink);padding:5px 7px}
+.pill .nm{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty{border:1.5px dashed var(--rule);padding:14px;text-align:center;font-size:13px;opacity:.6}
+
+.eqs{display:flex;flex-direction:column;gap:8px;margin:12px 0 0}
+.eq{border:1.5px solid var(--ink);border-left:6px solid var(--c)}
+.eq-h{display:flex;align-items:center;gap:8px;padding:6px 8px}
+.seg.sub{margin-top:-1.5px}
+.eq-in{font-family:var(--display);text-transform:uppercase;font-size:14px;letter-spacing:.02em;
+  border:0;border-bottom:1.5px dashed var(--rule);background:transparent;padding:2px 0;width:100%}
+.eq-in:focus-visible{outline:0;border-bottom-color:var(--cobalt);background:var(--paper2)}
+.eq-n{font-family:var(--display);text-transform:uppercase;font-size:14px;letter-spacing:.02em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eq-m{display:flex;flex-wrap:wrap;gap:5px;padding:0 8px 8px}
+.mem{font-size:12px;padding:3px 8px;background:var(--paper2);border-width:1px}
+
+
+.cat{display:flex;flex-direction:column;border-top:1px solid var(--rule)}
+.cg{display:flex;align-items:center;gap:9px;padding:7px 2px;border-bottom:1px solid var(--rule);cursor:pointer}
+.cg input{width:19px;height:19px;accent-color:var(--cobalt);flex:none;margin:0}
+.cg.bloq{opacity:.4;cursor:default}
+.cg-x{width:19px;text-align:center;font-family:var(--mono);flex:none}
+.cg-p{color:var(--ink);display:grid;place-items:center;flex:none}
+.cg-t{flex:1;display:flex;flex-direction:column;min-width:0}
+.cg-t b{font-size:13.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cg-t i{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;opacity:.55;font-style:normal}
+.cg-e{font-size:9px;letter-spacing:1px;color:var(--magenta);flex:none}
+.picto{display:block}
+
+.ptab{display:flex;flex-wrap:wrap;gap:5px}
+.ptab .cell{width:calc(20% - 4px)}
+.ptab .cell .lab{font-family:var(--mono);font-size:10px;opacity:.6;text-align:center;margin-bottom:2px}
+.ptab input{text-align:center;font-family:var(--mono);font-weight:700;padding:7px 2px}
+
+.carwrap{position:relative;margin:clamp(18px,13vh,112px) 0 22px}
+/* visor: parèntesis de cantonada + guia central, en comptes d'una caixa tancada */
+.car-mark{position:absolute;top:-10px;bottom:-10px;left:50%;transform:translateX(-50%);
+  width:min(196px,calc(100% / 1.95));z-index:4;pointer-events:none}
+.car-mark span{position:absolute;width:18px;height:18px;border:3px solid var(--magenta)}
+.car-mark span:nth-child(1){top:0;left:0;border-right:0;border-bottom:0}
+.car-mark span:nth-child(2){top:0;right:0;border-left:0;border-bottom:0}
+.car-mark span:nth-child(3){bottom:0;left:0;border-right:0;border-top:0}
+.car-mark span:nth-child(4){bottom:0;right:0;border-left:0;border-top:0}
+.car-mark:before{content:'';position:absolute;top:50%;left:-11px;transform:translateY(-50%);
+  border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--magenta)}
+.car-mark:after{content:'';position:absolute;top:50%;right:-11px;transform:translateY(-50%);
+  border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:11px solid var(--magenta)}
+.carrusel{position:relative;overflow:hidden;padding:22px 0;perspective:1150px;perspective-origin:50% 50%;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent)}
+/* solc: dóna la sensació que les cartes corren per un rail */
+.carrusel:before{content:'';position:absolute;left:0;right:0;top:50%;height:1.5px;
+  background:repeating-linear-gradient(90deg,var(--rule) 0 7px,transparent 7px 15px);z-index:0}
+.car-track{display:flex;gap:14px;will-change:transform;transform-style:preserve-3d}
+.card{flex:0 0 auto;width:172px;height:158px;border:1.5px solid var(--ink);
+  background:linear-gradient(168deg,var(--paper) 0%,var(--paper) 58%,var(--paper2) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:12px 10px;
+  box-shadow:3px 3px 0 var(--ink);position:relative;z-index:1;
+  transition:background .25s,box-shadow .25s;backface-visibility:hidden}
+.card-f{position:absolute;top:7px;left:9px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.38}
+.card-p{color:var(--cobalt);display:grid;place-items:center;transition:color .25s}
+.card-n{font-family:var(--display);text-transform:uppercase;font-size:14px;line-height:1.05;text-align:center;
+  letter-spacing:.01em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+/* la carta guanyadora s'encunya: sobrepassa i s'assenta */
+.car-track.fet .card:not(.guanyadora){opacity:.22!important;filter:grayscale(1) blur(1.4px)!important;transition:opacity .45s,filter .45s}
+.card.guanyadora{background:var(--canary);box-shadow:6px 6px 0 var(--ink);z-index:5;
+  animation:encunya .5s cubic-bezier(.2,1.5,.35,1) both}
+.card.guanyadora .card-p{color:var(--ink)}
+.card.guanyadora .card-f{opacity:.6}
+@keyframes encunya{
+  0%{transform:scale(1.22) rotate(-2.5deg)}
+  55%{transform:scale(1.02) rotate(.8deg)}
+  100%{transform:scale(1.08) rotate(0)}
+}
+/* halo curt en encertar */
+.card.guanyadora:after{content:'';position:absolute;inset:-9px;border:2.5px solid var(--magenta);
+  animation:halo .55s ease-out forwards;pointer-events:none}
+@keyframes halo{0%{opacity:1;inset:-2px}100%{opacity:0;inset:-22px}}
+.topaj{background:none;border:0;color:var(--paper);font-size:16px;opacity:.75;padding:0 0 0 10px;cursor:pointer}
+.normes{border:1.5px solid var(--ink);background:var(--canary);box-shadow:3px 3px 0 var(--ink);margin:0 0 14px}
+.normes-h{display:flex;align-items:center;gap:9px;width:100%;background:none;border:0;padding:9px 11px;
+  font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;cursor:pointer}
+.normes-t{flex:1;text-align:left}
+.normes-p{font-size:13px}
+.normes-l{border-top:1.5px solid var(--ink);padding:4px 11px 10px}
+.normes-i{padding:8px 0;border-bottom:1px solid rgba(20,18,14,.16)}
+.normes-i:last-child{border-bottom:0}
+.normes-i b{display:block;font-family:var(--display);text-transform:uppercase;font-size:14px;letter-spacing:.01em}
+.normes-i span{display:block;font-size:13px;line-height:1.45;margin-top:2px}
+.ajrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
+.ajrow span{font-size:14.5px;font-weight:500}
+.sw{min-width:62px;padding:7px 10px;border:1.5px solid var(--ink);background:var(--paper);font-weight:700;
+  font-family:var(--mono);font-size:12px;cursor:pointer}
+.sw.on{background:var(--verd);color:var(--paper)}
+.pmbtn{width:38px;height:38px;flex:none;border:1.5px solid var(--ink);background:var(--paper);
+  font-family:var(--display);font-size:19px;line-height:1;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.pmbtn:active{transform:translate(2px,2px);box-shadow:none}
+.numrow .numval{width:56px}
+.sorpresa{border-width:2.5px}
+.srp{display:flex;gap:12px;align-items:flex-start}
+.srp-i{font-family:var(--display);font-size:36px;line-height:1;width:52px;height:52px;flex:none;
+  display:grid;place-items:center;background:var(--canary);border:1.5px solid var(--ink)}
+.srp b{font-size:14px}
+.srp p{font-size:13px;margin:4px 0 0;opacity:.75}
+.gcard{border:1.5px solid var(--ink);box-shadow:5px 5px 0 var(--cobalt);padding:16px;margin:0 0 14px;background:var(--paper)}
+.gc-p{color:var(--magenta);margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 16px}
+.chip{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border:1.5px solid var(--ink);padding:4px 7px}
+.chip.fill{background:var(--canary)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:0 0 10px 30px;font-size:14px}
+.steps li:before{content:counter(s);position:absolute;left:0;top:1px;font-family:var(--mono);font-weight:700;font-size:11px;
+  width:20px;height:20px;background:var(--ink);color:var(--paper);display:grid;place-items:center}
+.callout{border-left:4px solid var(--magenta);background:var(--paper2);padding:10px 12px;margin:14px 0 0;font-size:13.5px}
+.callout b{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--magenta)}
+
+.eina.porta{border-left-color:var(--magenta)}
+.porta-q{font-family:var(--display);text-transform:uppercase;font-size:17px;margin:0 0 10px;line-height:1.05}
+.portab{display:flex;flex-direction:column;gap:6px}
+.portab button{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px;
+  font-size:15px;font-weight:500;background:var(--paper);border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.portab button i{font-family:var(--mono);font-style:normal;font-size:10.5px;opacity:.5}
+.portab button.qual{font-style:italic;opacity:.75}
+.eina.consig{border-left-color:var(--magenta)}
+.cg-box{border:1.5px solid var(--ink);background:var(--paper2);padding:16px 12px;text-align:center}
+.cg-box.sona{background:var(--cobalt);color:var(--paper);border-color:var(--ink)}
+.cg-box.off{background:var(--paper)}
+.cg-box.espera{background:var(--ink);color:var(--paper)}
+.cg-k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:0}
+.cg-n{font-family:var(--display);text-transform:uppercase;font-size:34px;line-height:1;margin:4px 0 0}
+.cg-box.sona .cg-n{font-size:22px}
+.cg-t{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.7;margin:8px 0 0}
+.cg-box.sona .cg-t{opacity:.85}
+.cg-t b{font-size:15px}
+.difsel{display:flex;gap:5px;margin:0 0 10px}
+.difsel button{flex:1;font-size:11px;padding:6px 4px;border-width:1.5px;background:var(--paper)}
+.difsel button[aria-pressed=true]{background:var(--cobalt);color:var(--paper);font-weight:700}
+.lletres{margin:12px 0 0;border-top:1px solid var(--rule);padding-top:8px}
+.ll{display:flex;align-items:center;gap:9px;padding:3px 0;font-size:14px}
+.ll-k{font-family:var(--mono);font-weight:700;font-size:12px;width:22px;height:22px;flex:none;
+  display:grid;place-items:center;background:var(--canary);border:1.5px solid var(--ink)}
+.torn{border:1.5px solid var(--ink);border-left:6px solid var(--c);padding:14px;margin:8px 0 0;text-align:center}
+.torn-h{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin:0}
+.torn-n{font-family:var(--display);text-transform:uppercase;font-size:30px;line-height:1;margin:4px 0 12px}
+.crono{font-family:var(--mono);font-weight:700;font-size:48px;text-align:center;border:1.5px solid var(--ink);
+  background:var(--paper2);padding:14px 0;letter-spacing:-.02em}
+.crono.on{background:var(--canary)}
+.crono.fi{background:var(--magenta);color:var(--paper)}
+.cronobtn{display:flex;margin:8px 0 4px}
+.cronobtn button{flex:1}
+.tap-h{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;color:var(--cobalt)}
+.taps{display:flex;flex-direction:column;gap:7px}
+.tap{display:flex;align-items:center;gap:10px;padding:13px 11px;border-left:6px solid var(--c);text-align:left;
+  box-shadow:3px 3px 0 var(--ink)}
+.tap .nm{flex:1;font-weight:500;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tapped{margin:18px 0 0;border-top:1.5px solid var(--ink);padding-top:8px}
+.tr{display:flex;align-items:center;gap:9px;padding:4px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.tr-i{font-family:var(--display);font-size:16px;min-width:22px}
+.tr .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tr-t{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--cobalt)}
+.nums{display:flex;flex-direction:column;gap:7px}
+.numrow{display:flex;align-items:center;gap:9px;border:1.5px solid var(--ink);border-left:6px solid var(--c);padding:6px 8px}
+.numrow .nm{flex:1;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.numrow input{width:74px;text-align:center;font-family:var(--mono);font-weight:700}
+.numrow .numval{width:74px;text-align:center;font-family:var(--mono);font-weight:700;font-size:16px}
+.numrow .un{font-family:var(--mono);font-size:10px;text-transform:uppercase;opacity:.55;min-width:44px}
+
+.orow{display:flex;align-items:center;gap:6px;border:1.5px solid var(--ink);border-left:6px solid var(--c);
+  padding:6px 7px;margin-bottom:6px;background:var(--paper)}
+.orow.tied{border-left-color:var(--canary)}
+.orow.absent{opacity:.45;border-style:dashed}
+.orow .pos{font-family:var(--display);font-size:16px;min-width:30px;text-align:center;line-height:1}
+.orow .nm{flex:1;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.orow .val{font-family:var(--mono);font-size:11px;font-style:normal;opacity:.6}
+.orow .pts{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--cobalt);min-width:32px;text-align:right}
+.orow .stack{display:flex;flex-direction:column;gap:2px}
+.orow .stack button{width:27px;height:16px;padding:0;font-size:8px;display:grid;place-items:center}
+.tbtn,.abtn{width:26px;height:26px;padding:0;font-family:var(--mono);font-weight:700;font-size:11px}
+.tbtn[aria-pressed=true]{background:var(--canary)}
+.abtn[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.okey{display:flex;gap:12px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;opacity:.6;margin:10px 0 0;flex-wrap:wrap}
+
+.stand{border:1.5px solid var(--ink)}
+.srow{display:flex;align-items:center;gap:9px;padding:9px 10px;border-bottom:1px solid var(--rule);
+  animation:slide .32s cubic-bezier(.2,.8,.2,1) both}
+.srow:last-child{border-bottom:0}
+.srow.lead{background:var(--canary)}
+.srow .rk{font-family:var(--display);font-size:19px;min-width:30px;line-height:1}
+.srow .nm{flex:1;font-weight:500;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srow .dl{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--magenta);min-width:34px;text-align:right}
+.srow .tt{font-family:var(--mono);font-size:17px;font-weight:700;min-width:42px;text-align:right}
+@keyframes slide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+.podium{display:flex;align-items:flex-end;gap:8px;margin:8px 0 18px}
+.pod{flex:1;border:1.5px solid var(--ink);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+  gap:4px;padding:10px 6px;text-align:center;animation:rise .5s cubic-bezier(.2,.9,.2,1) both}
+.pod .p-nm{font-family:var(--display);text-transform:uppercase;font-size:14px;line-height:1;word-break:break-word}
+.pod .p-pt{font-family:var(--mono);font-size:12px;font-weight:700}
+.pod .p-rk{font-family:var(--display);font-size:28px;line-height:.9}
+.pod.g1{height:166px;background:var(--canary);animation-delay:.28s}
+.pod.g2{height:128px;background:var(--paper2);animation-delay:.14s}
+.pod.g3{height:102px;background:var(--paper2)}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+.imgout{margin:20px 0 0;border:1.5px solid var(--ink);padding:8px;background:var(--paper2)}
+.imgout img{width:100%;display:block;border:1px solid var(--rule)}
+
+.eina{border:1.5px solid var(--ink);border-left:6px solid var(--cobalt);background:var(--paper);
+  padding:12px;margin:0 0 12px}
+.eina-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:0 0 10px}
+.eina-h span:first-child{font-family:var(--display);text-transform:uppercase;font-size:13px;letter-spacing:.03em}
+.eina-t{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;opacity:.55}
+.eina-b{display:flex;gap:8px;margin-top:10px}
+.eina-b button{flex:1;font-size:14px;padding:11px 8px}
+.srt{font-family:var(--display);text-transform:uppercase;font-size:clamp(22px,7vw,32px);line-height:1.02;
+  background:var(--canary);border:1.5px solid var(--ink);padding:16px 12px;text-align:center;word-break:break-word}
+.srt.tapat{background:var(--paper2);border-style:dashed;cursor:pointer;width:100%;font-size:17px;line-height:1.3;text-transform:none;font-family:var(--body);font-weight:700}
+.srt.tapat i{display:block;font-family:var(--mono);font-style:normal;font-size:11px;font-weight:400;opacity:.6;margin-top:6px;text-transform:uppercase}
+.srt.llarg{font-family:var(--body);font-weight:700;text-transform:none;font-size:17px;line-height:1.3;text-align:left}
+.cd{font-family:var(--mono);font-weight:700;font-size:54px;text-align:center;border:1.5px solid var(--ink);
+  background:var(--paper2);padding:12px 0;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.cd.on{background:var(--canary)}
+.cd.fi{background:var(--magenta);color:var(--paper)}
+.mus{font-family:var(--display);text-transform:uppercase;font-size:30px;text-align:center;
+  border:1.5px solid var(--ink);background:var(--paper2);padding:16px 0;letter-spacing:.04em}
+.mus.on{background:var(--magenta);color:var(--paper);animation:bat .55s ease-in-out infinite alternate}
+@keyframes bat{from{transform:scale(1)}to{transform:scale(1.035)}}
+.fitxer{display:block;margin-top:10px;border:1.5px dashed var(--ink);padding:9px 10px;font-size:12.5px;
+  text-align:center;cursor:pointer;background:var(--paper2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fitxer input{display:none}
+#flaix{position:fixed;inset:0;background:var(--canary);opacity:0;pointer-events:none;z-index:60;transition:opacity .1s}
+#flaix.on{animation:fl .7s steps(1) 1}
+@keyframes fl{0%,20%,40%{opacity:.92}10%,30%,50%{opacity:0}51%,100%{opacity:0}}
+.repren{border:2.5px solid var(--ink);background:var(--canary);padding:12px;margin:0 0 16px}
+.repren b{font-family:var(--display);text-transform:uppercase;font-size:15px;letter-spacing:.02em}
+.repren p{font-size:12.5px;margin:3px 0 10px}
+.repren-b{display:flex;gap:8px}
+.repren-b button{flex:1;font-size:13px;padding:9px 6px;background:var(--paper)}
+.warn{border:1.5px solid var(--magenta);background:#fff;padding:10px 12px;font-size:13px;margin:0 0 14px}
+@media (prefers-reduced-motion:reduce){.car-track{transition:none!important}.srow,.pod,.card,.mus,#flaix{animation:none!important;transition:none!important}}
+
+/* --- botons +/- als resultats --- */
+.pm{width:42px;height:42px;flex:none;font-size:22px;line-height:1;font-weight:700;
+  border:1.5px solid var(--ink);background:var(--paper2);box-shadow:2px 2px 0 var(--ink)}
+.pm:active{transform:translate(2px,2px);box-shadow:none}
+.numrow input{width:56px}
+.valpos{opacity:.5;margin-top:6px;letter-spacing:.02em}
+/* --- gestió de gent entre rondes --- */
+.ggpanel{margin-top:16px;border:1.5px solid var(--ink);background:var(--paper);padding:14px 12px;box-shadow:3px 3px 0 var(--ink)}
+.ggpanel h2{margin:0 0 4px;font-size:15px}
+.ggpanel .barra{display:flex;gap:8px;align-items:center}
+.ggpanel input{padding:10px;border:1.5px solid var(--ink);background:var(--paper2);font:inherit}
+.gglist{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.ggrow{display:flex;align-items:center;gap:9px;border:1.5px solid var(--ink);border-left:6px solid var(--c);padding:6px 8px}
+.ggrow .nm{flex:1;font-size:14px;font-weight:500}
+/* --- titulars finals: apareixen un darrere l'altre --- */
+.titulars{margin-top:20px;display:flex;flex-direction:column;gap:9px}
+.tit{border:1.5px solid var(--ink);border-left:6px solid var(--magenta);background:var(--paper);
+  padding:10px 12px;box-shadow:3px 3px 0 var(--ink);opacity:0;animation:titEntra .5s cubic-bezier(.2,1.4,.4,1) forwards}
+.tit-k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.55}
+.tit-v{display:block;font-family:var(--display);text-transform:uppercase;font-size:21px;line-height:1.05;margin:3px 0 1px}
+.tit-d{display:block;font-size:12.5px;opacity:.7}
+@keyframes titEntra{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+/* --- benvinguda --- */
+.benv{text-align:left;max-width:400px}
+.benv h1{font-size:34px;line-height:.95;margin:0 0 12px}
+.benv-l{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:9px}
+.benv-l li{font-size:14px;line-height:1.45;padding-left:16px;position:relative}
+.benv-l li:before{content:'';position:absolute;left:0;top:7px;width:8px;height:8px;background:var(--magenta)}
+@media (prefers-reduced-motion:reduce){.tit{animation:none;opacity:1}}
+
+/* --- mode joc: fora normes, tot gran --- */
+.jugant-h{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.jugant-t{font-family:var(--display);text-transform:uppercase;font-size:15px;line-height:1;
+  letter-spacing:.02em;opacity:.62;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body:has(.jugant-h) .srt{font-size:clamp(30px,10vw,46px);padding:26px 14px}
+body:has(.jugant-h) .srt.llarg{font-size:clamp(19px,5.4vw,25px)}
+body:has(.jugant-h) .cd{font-size:74px;padding:16px 0}
+body:has(.jugant-h) .cg-n{font-size:clamp(30px,9.5vw,44px)}
+body:has(.jugant-h) .cg-box{padding:26px 14px}
+body:has(.jugant-h) .cg-box.sona .cg-n{font-size:clamp(22px,7vw,30px)}
+body:has(.jugant-h) .eina{padding:16px 14px}
+body:has(.jugant-h) .srt.tapat{font-size:19px;padding:34px 14px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar"><div class="brand">Gimcana <em>·</em> v50</div><div class="meta" id="meta"></div><button class="topaj" data-aj="obre" aria-label="Ajustos">⚙</button></div>
+  <div class="main" id="main"></div>
+</div>
+<div id="flaix"></div>
+<div class="footbar"><div class="footbar-inner" id="foot"></div></div>
+<script>
+/* GENERAT · catàleg v22 */
+const VERSIO_DADES=50;
+const MATERIAL={"musica":"Música o altaveu","cadires":"Cadires","taula":"Taula","gots":"Gots","paper":"Paper i bolígraf","mocador":"Mocadors","pilota":"Pilota petita","globus":"Globus","corda":"Corda o cordill","galleda":"Galleda"};
+const MATERIAL_BASIC=["musica","cadires","taula","gots","paper","mocador"];
+const PREDEFINITS=[{"nom":"A casa","mat":["musica","cadires","taula","gots","paper","mocador"]},{"nom":"A fora","mat":["musica","gots","paper","mocador","pilota","globus","corda","galleda"]},{"nom":"Ho tenim tot","mat":["musica","cadires","taula","gots","paper","mocador","pilota","globus","corda","galleda"]}];
+const CATALEG=[{"id":"ungpeu","nom":"A peu coix","fam":"forca","lloc":"both","mat":[],"min":5,"energia":2,"escala":"simultani","modes":["ind"],"mesura":"temps","unitat":"s","passos":["Tothom dret sobre un sol peu, l’altre enlaire.","Els braços no poden tocar res ni ningú.","Qui posa el segon peu a terra, queda fora."],"ordre":"Engega el crono i toca cadascú quan cau. Qui aguanta més, guanya.","dir":"desc","torns":true,"eines":["crono"],"tastejada":true},{"id":"abecedari","nom":"Abecedari temàtic","fam":"endevinar","lloc":"both","mat":[],"min":8,"energia":1,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["L’app treu una categoria.","Per torns, cal dir un element que comenci per A, després per B, per C...","Qui no en trobi cap amb la lletra que toca en trenta segons, queda fora."],"ordre":"Toca els jugadors en l’ordre en què es queden encallats.","inversa":true,"taula":true,"eines":["sorteig"],"llista":"Categories","unic":true,"tastejada":true},{"id":"noriure","nom":"Aguanta sense riure","fam":"mimica","lloc":"both","mat":[],"min":8,"energia":1,"escala":"torns","modes":["ind"],"mesura":"temps","unitat":"s","passos":["Un jugador es posa al mig i no pot riure ni somriure.","La resta té via lliure per fer-lo riure, però sense tocar-lo.","Pareu el crono quan el jugador del mig riu. Tothom fa el seu torn."],"ordre":"Toca cadascú quan riu. Qui aguanta més, guanya.","dir":"desc","taula":true,"torns":true,"eines":["crono"],"tastejada":true},{"id":"bufa","nom":"Bufa la pilota","fam":"bufar","lloc":"in","mat":["pilota","taula"],"min":5,"energia":1,"escala":"torns","modes":["ind"],"mesura":"temps","unitat":"s","passos":["Decidiu un recorregut d’anada i tornada sobre la taula.","Mans a l’esquena: la pilota es mou només bufant.","Si cau de la taula, torna a sortida sense aturar el crono."],"ordre":"Cronòmetre. Toca el jugador quan la pilota arriba.","dir":"asc","eines":["crono"],"tastejada":true},{"id":"cadires","nom":"Cadira musical","fam":"ball","lloc":"both","mat":["cadires","musica"],"min":6,"energia":2,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["Poseu cadires en cercle mirant enfora, una menys que jugadors.","Mentre sona la música tothom camina; quan para, tothom seu.","Qui es queda sense cadira surt. Traieu una cadira i repetiu."],"ordre":"Toca els jugadors en l’ordre en què van quedant eliminats.","inversa":true,"eines":["consignes"],"consignes":["Fora una cadira"],"cicle":[8,25],"pausa":10,"etiqueta":"La música ha parat!","mentre":"camineu al voltant de les cadires","so":"mogut","tastejada":true},{"id":"peusjunts","nom":"Cursa a peus junts","fam":"salt","lloc":"out","mat":[],"min":5,"energia":3,"escala":"simultani","modes":["ind","par","eq"],"mesura":"ordre","unitat":"","passos":["Marqueu sortida i arribada a uns 20 m.","Tothom amb els peus ben junts, sense separar-los en cap moment.","A la senyal, salts fins a l’arribada. Qui separa els peus, torna a la sortida."],"ordre":"Toca cadascú a mesura que creua la línia d’arribada. En cas d'anar amb parelles o equip, ho feu en relleus. ","tastejada":true},{"id":"trespeus","nom":"Cursa a tres peus","fam":"cursa","lloc":"out","mat":["mocador"],"min":6,"energia":3,"escala":"simultani","modes":["par","eq"],"mesura":"ordre","unitat":"","passos":["Cada parella es lliga el turmell dret amb l’esquerre del company.","Recorregut de vint metres, anada i tornada.","Si es desfà el nus, cal tornar-lo a fer abans de continuar."],"ordre":"Toca cada parella a mesura que arriba.","tastejada":true},{"id":"carretilla","nom":"Cursa de la carretilla","fam":"cursa","lloc":"out","mat":[],"min":5,"energia":3,"escala":"simultani","modes":["par","eq"],"mesura":"ordre","unitat":"","passos":["Un camina amb les mans; l’altre li aguanta els turmells.","Recorregut de quinze metres. A la meitat es canvien els papers.","Si el de baix toca el terra amb el cos, tornes a començar."],"ordre":"Toca cada parella a mesura que arriba.","tastejada":true},{"id":"pistoler","nom":"Duel de pistolers","fam":"reflex","lloc":"both","mat":[],"min":6,"energia":2,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["Dos jugadors, esquena contra esquena, fan tres passes i es giren.","Quan l’àrbitre crida \"ja!\", el primer que assenyala l’altre i diu \"pam\" guanya.","El guanyador continua; el perdedor queda eliminat."],"ordre":"Toca els jugadors en l’ordre en què van perdent els duels.","inversa":true,"tastejada":true},{"id":"veritatmentida","nom":"Dues veritats i una mentida","fam":"buscar","lloc":"both","mat":[],"min":10,"energia":1,"escala":"torns","modes":["ind"],"mesura":"punts","unitat":"encerts","passos":["Cadascú diu tres coses sobre ell mateix: dues certes i una falsa.","La resta ha d’endevinar quina és la mentida.","Puntua qui encerta la mentida dels altres."],"ordre":"Apunta els encerts de cada un.","dir":"desc","taula":true,"tastejada":true,"mostraTorns":true},{"id":"numeromort","nom":"El número maleït","fam":"numeros","lloc":"both","mat":[],"min":6,"energia":1,"escala":"torns","modes":["ind"],"mesura":"ordre","unitat":"","passos":["L'app tria el número maleït, per exemple el 3, i tots els seus múltiples.","En cercle, es compta en veu alta per torns: 1, 2...","Quan toca un número maleït o un múltiple, cal dir \"PAM\" en lloc del número. Qui s’equivoca, fora."],"ordre":"Toca els jugadors en l’ordre en què s’equivoquen.","inversa":true,"taula":true,"eines":["sorteig"],"llista":"Nombres","unic":true,"mostraTorns":true,"tastejada":true},{"id":"embarbus","nom":"Embarbussaments","fam":"mimica","lloc":"both","mat":[],"min":6,"energia":1,"escala":"torns","modes":["ind"],"mesura":"temps","unitat":"s","passos":["L’app treu l’embarbussament, i és el mateix per a tothom.","Cal dir-lo tres vegades seguides sense equivocar-se.","Si falla, torna a començar les tres repeticions."],"ordre":"Cronòmetre per jugador. Menys temps, més punts.","dir":"asc","taula":true,"eines":["crono","sorteig"],"llista":"Embarbussaments","unic":true,"torns":true,"tastejada":true},{"id":"picapare","nom":"En Pau diu","fam":"reflex","lloc":"both","mat":[],"min":6,"energia":2,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["L’àrbitre dóna ordres: \"en Pau diu que salteu\".","Només s’obeeix si l’ordre comença amb \"en Pau diu\".","Si obeeixes una ordre sense aquesta fórmula, quedes eliminat."],"ordre":"Toca els jugadors en l’ordre en què s’equivoquen.","inversa":true,"taula":true,"eines":["consignes"],"consignes":["El Pau diu toca't el nas","El Pau diu aixeca una mà","El Pau diu aixeca les dues mans","El Pau diu toca't el cap","El Pau diu toca't una orella","El Pau diu toca't la panxa","El Pau diu toca't un genoll","El Pau diu toca't una espatlla","El Pau diu pica de mans","El Pau diu pica de mans dues vegades","El Pau diu salta una vegada","El Pau diu salta dues vegades","El Pau diu fes un pas endavant","El Pau diu fes un pas enrere","El Pau diu gira cap a la dreta","El Pau diu gira cap a l'esquerra","El Pau diu mira amunt","El Pau diu mira avall","El Pau diu mira a la dreta","El Pau diu mira a l'esquerra","El Pau diu tanca els ulls","El Pau diu obre els ulls","El Pau diu somriu","El Pau diu fes una cara trista","El Pau diu fes una cara sorpresa","El Pau diu fes una cara enfadada","El Pau diu fes una ganyota","El Pau diu posa't de puntetes","El Pau diu aixeca el braç dret","El Pau diu aixeca el braç esquerre","El Pau diu abaixa els braços","El Pau diu creua els braços","El Pau diu obre els braços","El Pau diu posa les mans a la cintura","El Pau diu toca el terra","El Pau diu toca una paret","El Pau diu seu","El Pau diu aixeca't","El Pau diu gira una vegada","El Pau diu fes mitja volta","El Pau diu camina dos passos","El Pau diu camina tres passos","El Pau diu camina enrere","El Pau diu queda't quiet","El Pau diu aixeca una cama","El Pau diu toca't el peu dret","El Pau diu toca't el peu esquerre","El Pau diu toca't el colze","El Pau diu toca't la galta","El Pau diu toca't el front","El Pau diu toca't la barbeta","El Pau diu obre la boca","El Pau diu tanca la boca","El Pau diu treu la llengua","El Pau diu infla les galtes","El Pau diu fes un petó a l'aire","El Pau diu fes un cor amb les mans","El Pau diu fes una V amb els dits","El Pau diu mostra el polze amunt","El Pau diu mostra el polze avall","El Pau diu mou les mans","El Pau diu mou els braços","El Pau diu mou el cap","El Pau diu mou una cama","El Pau diu mou els peus","El Pau diu fes veure que nedes","El Pau diu fes veure que voles","El Pau diu camina com un robot","El Pau diu camina com un pingüí","El Pau diu camina com un gegant","El Pau diu camina molt lent","El Pau diu fes un salt petit","El Pau diu estira els braços","El Pau diu ajup-te","El Pau diu inclina't cap endavant","El Pau diu inclina't cap enrere","El Pau diu toca't els cabells","El Pau diu posa una mà al cor","El Pau diu posa les mans al cap","El Pau diu pica de peus","El Pau diu fes una reverència","El Pau diu saluda amb la mà","El Pau diu digues hola","El Pau diu digues adeu","El Pau diu fes silenci","El Pau diu posa cara de son","El Pau diu imita un gat","El Pau diu imita un gos","El Pau diu imita un lleó","El Pau diu imita una granota","El Pau diu imita un ocell","El Pau diu imita un peix","El Pau diu toca alguna cosa vermella","El Pau diu toca alguna cosa blava","El Pau diu toca alguna cosa verda","El Pau diu toca alguna cosa groga","El Pau diu assenyala la porta","El Pau diu assenyala el sostre","El Pau diu assenyala el terra","El Pau diu assenyala una finestra","El Pau diu mou les espatlles","El Pau diu toca't el canell","El Pau diu toca't el braç","El Pau diu toca't la cama","El Pau diu toca't el turmell","Toca't el nas","Aixeca les mans","Salta","Pica de mans","Toca't el cap","Toca el terra","Gira sobre tu mateix","Seu","Aixeca't","Toca't les orelles","Toca't la panxa","Toca't els genolls","Aixeca una cama","Mira amunt","Mira avall","Mira a la dreta","Mira a l'esquerra","Tanca els ulls","Somriu","Fes una cara trista","Fes una cara sorpresa","Fes una ganyota","Posa't de puntetes","Creua els braços","Obre els braços","Posa les mans a la cintura","Posa les mans al cap","Fes un pas endavant","Fes un pas enrere","Fes un pas a la dreta","Fes un pas a l'esquerra","Gira cap a la dreta","Gira cap a l'esquerra","Ajup-te","Pica de peus","Mou els braços","Mou les mans","Mou el cap","Mou les espatlles","Toca't el front","Toca't la barbeta","Toca't la galta","Toca't una espatlla","Toca't un colze","Toca't un peu","Toca't el coll","Toca't els cabells","Posa una mà al cor","Fes un petó a l'aire","Saluda amb la mà","Fes una reverència","Fes un cor amb les mans","Mostra el polze amunt","Mostra el polze avall","Fes una V amb els dits","Treu la llengua","Infla les galtes","Badalla","Riu","Posa cara de son","Fes veure que tens fred","Fes veure que tens calor","Fes veure que dorms","Fes veure que et despertes","Fes veure que nedes","Fes veure que voles","Fes veure que condueixes","Fes veure que menges","Fes veure que beus","Imita un gat","Imita un gos","Imita un lleó","Imita una granota","Imita un ocell","Imita un peix","Camina com un robot","Camina com un pingüí","Camina com un gegant","Camina molt lent","Corre sense moure't del lloc","Fes una volta","Fes mitja volta","Queda't quiet","Digues hola","Digues adeu","Digues un color","Digues un animal","Digues una vocal","Compta fins a tres","Toca alguna cosa vermella","Toca alguna cosa blava","Toca alguna cosa verda","Toca alguna cosa groga","Assenyala el sostre","Assenyala el terra","Assenyala la porta","Assenyala una finestra"],"cicle":[1,2],"pausa":3,"etiqueta":"Només obeiu si comença per «En Pau diu»","mentre":"estigueu atents a l’ordre","senseMusica":true,"llista":"","tastejada":true},{"id":"boles","nom":"Encistellar boles de paper","fam":"punteria","lloc":"both","mat":["paper","galleda"],"min":5,"energia":1,"escala":"torns","modes":["ind","eq"],"mesura":"punts","unitat":"encerts","passos":["Poseu una galleda a tres metres d’una línia de tir.","Feu deu boles de paper ben premsades, o reutilitzeu la mateixa en cada tir.","Heu de fer deu tirs des de darrere la línia. Compten les que queden dins la galleda."],"ordre":"Apunta els encerts de cada un.","dir":"desc","tastejada":true,"mostraTorns":true},{"id":"gotcap","nom":"Equilibri amb el got","fam":"equilibri","lloc":"both","mat":["gots"],"min":5,"energia":2,"escala":"torns","modes":["ind","par"],"mesura":"ordre","unitat":"passes","passos":["Un got ple d’aigua sobre el dors de la mà, braç estirat.","Creeu un recorregut i qui l'acabi abans guanya.","Si vesses l'aigua o toques el got amb l'altra mà et quedes en el lloc. "],"ordre":"Marca l'ordre d'arribada. O en el cas de no acabar, qui hagi arribat més lluny.","tastejada":true,"torns":true},{"id":"equilibricec","nom":"Equilibri amb els ulls tancats","fam":"forca","lloc":"both","mat":[],"min":5,"energia":2,"escala":"simultani","modes":["ind"],"mesura":"temps","unitat":"s","passos":["Dret sobre un peu i amb els ulls ben tancats.","Has de quedar-te en equilibri sense posar l'altre peu o arrepenjar-te amb la mà.","És més difícil del que sembla."],"ordre":"Engega el crono i toca cadascú quan cau o obre els ulls.","dir":"desc","torns":true,"eines":["crono"],"tastejada":true},{"id":"esquena","nom":"Esquena contra esquena","fam":"forca","lloc":"both","mat":[],"min":5,"energia":3,"escala":"simultani","modes":["par","eq"],"mesura":"ordre","unitat":"","passos":["Cada parella s’asseu a terra, esquena contra esquena i braços encreuats.","A la senyal, cal aixecar-se alhora, sense fer servir les mans ni separar les esquenes.","Un cop drets, tornar a seure i aixecar-se un segon cop."],"ordre":"Toca cada parella quan s’aixeca per segona vegada.","tastejada":true},{"id":"estatuagrup","nom":"Estàtua en equip","fam":"mimica","lloc":"both","mat":[],"min":6,"energia":2,"escala":"torns","modes":["eq"],"mesura":"punts","unitat":"encerts","passos":["L’app treu una paraula i l’equip la munta amb els seus cossos.","Teniu dos minuts per crear l’estàtua conjunta; el compte el porta l’app.","La resta ha d’endevinar què representa."],"ordre":"Guanya un punt qui endevina i qui fa l'estàtua. Si ningú endevenia no hi ha punts. ","dir":"desc","eines":["compte","sorteig"],"llista":"Mímica fàcil","segons":120,"mostraTorns":true,"tapat":true,"tastejada":true},{"id":"estatuainstant","nom":"Estàtua instantània","fam":"reflex","lloc":"both","mat":[],"min":5,"energia":2,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["Tothom es posa a ballar o fer el tonto mentre la música sona. ","De cop l'app para la música i diu \"Estàtua\". En aquest moment tothom es queda congelat exactament en la posició que tenia.","Qui es mogui, parpellegi molt o rigui, queda eliminat."],"ordre":"Toca els jugadors en l’ordre en què es mouen. L’últim que aguanta guanya.","inversa":true,"eines":["consignes"],"consignes":["ESTATUA"],"cicle":[5,25],"pausa":10,"etiqueta":"No us mogueu","mentre":"Balleu o feu el tonto","so":"mogut","tastejada":true,"rang":[8,25]},{"id":"contrari","nom":"Fes el contrari","fam":"reflex","lloc":"both","mat":[],"min":6,"energia":2,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["L’app dóna ordres de moviment: \"amunt\", \"salta\", \"gira’t\", etc.","Tothom ha de fer exactament el contrari del que es diu.","Qui fa el que es demana en lloc del contrari, queda fora. També s'elimina l'últim en fer l'acció contrària en cas que tothom ho faci bé."],"ordre":"Toca els jugadors en l’ordre en què s’equivoquen.","inversa":true,"taula":true,"eines":["consignes"],"consignes":["Aixeca els braços","Salteu","Tanqueu els ulls","Aplaudiu","Camineu cap endavant","Toqueu-vos el nas","Feu una cara trista","Poseu-vos de peu","Gireu a la dreta","Aixeca la cama dreta","Feu-vos molt petits","Rieu molt fort","Toqueu el terra","Apropeu-vos a mi","Sacsegeu el cap dient que NO","Parleu cridant","Feu un soroll molt fort","Digueu el vostre nom","Parleu amb veu greu","Canteu una cançó","Digueu SÍ","Respireu ràpid","Ensenyeu la mà oberta","Assenyaleu un objecte gran","Feu cara de calor","Mogueu-vos molt ràpid","Mireu a la dreta","Dormiu","Saludeu amb la mà","Digueu \"Hola\"","Pugeu els espatlles","Traieu la llengua","Amagueu les mans a l'esquena","Acaricieu-vos la panxa","Mireu cap al sostre","Creueu les cames","Correu sense moure-vos del lloc","Bufeu fort","Piqueu de peus a terra","Busqueu un objecte de color vermell","Inclineu-vos cap a la dreta","Feu cara de sorpresa","Crideu \"Dalt!\"","Camineu de puntetes","Tapeu-vos la cara amb les mans","Digueu \"Blanc\"","Feu veure que teniu molta gana","Mogueu els dits de les mans","Obriu la boca molt gran","Digueu \"Comença\""],"cicle":[3,4],"pausa":5,"mentre":"feu el contrari de...","senseMusica":true,"tastejada":true},{"id":"globusaire","nom":"Globus a l’aire","fam":"ball","lloc":"both","mat":["globus"],"min":5,"energia":3,"escala":"simultani","modes":["ind","par","eq"],"mesura":"temps","unitat":"s","passos":["Un globus per participant o equip.","Cal mantenir-lo a l’aire sense agafar-lo mai amb la mà tancada.","Si toca el terra, s’acaba el torn."],"ordre":"Crono comú: toca cadascú quan el seu globus toca el terra.","dir":"desc","eines":["crono"],"tastejada":true},{"id":"globusparella","nom":"Globus entre dos","fam":"ball","lloc":"both","mat":["globus"],"min":6,"energia":3,"escala":"simultani","modes":["par","eq"],"mesura":"temps","unitat":"s","passos":["Cada parella aguanta un globus entre els dos cossos, sense mans.","Es crea un recorregut i amb la parella s'ha de seguir.","Si cau el globus, es torna a començar des de l'inici."],"ordre":"Per torns, guanya el que ho faci en menys temps.","dir":"desc","eines":["crono"],"torns":true,"tastejada":true},{"id":"mimicaanimals","nom":"Imita l'animal","fam":"mimica","lloc":"both","mat":[],"min":15,"energia":2,"escala":"simultani","modes":["par","eq"],"mesura":"punts","unitat":"encerts","passos":["L'app anirà dient animals. Un de l'equip els haurà d'imitar. ","Durant dos minuts la resta de l'equip haurà d'endevinar el màxim d'animals.","No es pot passar al següent animal sense encertar."],"ordre":"Cada cop que es clica següent es puntua. Al final dels dos minuts, passa el torn al següent equip.","dir":"desc","eines":["compte","sorteig"],"segons":120,"taula":true,"mostraTorns":true,"puntuaTorn":true,"tapat":true,"llista":"Mimica animal","tastejada":true},{"id":"mimicaobjectes","nom":"Imita l'objecte","fam":"mimica","lloc":"both","mat":[],"min":15,"energia":2,"escala":"simultani","modes":["par","eq"],"mesura":"punts","unitat":"encerts","passos":["L'app anirà dient objectes. Un de l'equip els haurà d'imitar. Has d'imitar l'objecte, no la persona fent servir l'objecte. ","Durant dos minuts la resta de l'equip haurà d'endevinar el màxim d'objectes.","No es pot passar al següent objecte sense encertar."],"ordre":"Cada cop que es clica següent es puntua. Al final dels dos minuts, passa el torn al següent equip.","dir":"desc","eines":["compte","sorteig"],"segons":120,"taula":true,"mostraTorns":true,"puntuaTorn":true,"tapat":true,"llista":"Mimicaobjectes","tastejada":true},{"id":"cadiraparet","nom":"La cadira invisible","fam":"forca","lloc":"both","mat":[],"min":5,"energia":3,"escala":"simultani","modes":["ind","eq"],"mesura":"temps","unitat":"s","passos":["Esquena ben plana contra la paret.","Baixa fins que els genolls facin angle recte, com si seguessis en una cadira.","Aguanta tant com puguis sense recolzar les mans a les cames."],"ordre":"Engega el crono i toca cadascú quan es rendeix. Qui aguanta més, guanya.","dir":"desc","eines":["crono"],"tastejada":true},{"id":"cantacontinua","nom":"La cançó encadenada","fam":"cantar","lloc":"both","mat":[],"min":8,"energia":1,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["El primer canta un tros d’una cançó qualsevol i para en una paraula.","El següent ha de continuar la cançó o començar-ne una de nova amb l'última paraula cantada.","Si no comença a cantar en vint segons queda eliminat."],"ordre":"Toca els jugadors en l’ordre en què es queden sense cançó.","inversa":true,"taula":true,"mostraTorns":true,"tastejada":true},{"id":"historia","nom":"La història d'una paraula","fam":"endevinar","lloc":"both","mat":[],"min":8,"energia":1,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["S’explica una història entre tots, per torns. Comença algú amb una paraula.","Per torns, cadascú només pot afegir-hi una paraula i ha de continuar la frase (sempre començant-la des de l'inici)","Qui s’encalla, trenca la frase o triga massa, queda fora."],"ordre":"Toca els jugadors en l’ordre en què trenquen la història.","inversa":true,"taula":true,"mostraTorns":true,"tastejada":true},{"id":"veualta","nom":"La nota més llarga","fam":"cantar","lloc":"both","mat":[],"min":5,"energia":1,"escala":"simultani","modes":["ind"],"mesura":"temps","unitat":"s","passos":["Tothom agafa aire en el seu torn.","Cal aguantar una sola nota cantada tant com es pugui.","Sense respirar pel mig ni fer trampes."],"ordre":"Engega el crono i toca cadascú quan se li acaba l’aire.","dir":"desc","taula":true,"torns":true,"eines":["crono"],"tastejada":true},{"id":"riurefals","nom":"La rialla falsa","fam":"mimica","lloc":"both","mat":[],"min":6,"energia":1,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["En cercle, el primer diu \"ha\".","El següent \"ha ha\", el tercer \"ha ha ha\", i així augmentant.","Qui riu de veritat o s’equivoca amb el compte, queda fora."],"ordre":"Toca els jugadors en l’ordre en què riuen o fallen.","inversa":true,"taula":true,"tastejada":true},{"id":"safata","nom":"La safata de memòria","fam":"memoria","lloc":"both","mat":["paper"],"min":8,"energia":1,"escala":"simultani","modes":["ind","eq"],"mesura":"punts","unitat":"objectes","passos":["Entre tots busqueu vint objectes de casa. Per exemple, si sou 4 jugadors, cadascú busca cinc objectes. Si sou 10, dos objectes cadascú. ","Es posen tots sobre la taula de cop i tots teniu trenta segons per mirar-los. Al cap de trenta segons, tothom es gira per no veure'ls. ","Cadascú apunta en un paper tots els que recordi. "],"ordre":"Apunta els objectes correctes de cada un.","dir":"desc","taula":true,"eines":["compte"],"segons":30,"tastejada":true},{"id":"limbo","nom":"Limbo","fam":"corda","lloc":"both","mat":["corda"],"min":8,"energia":2,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["Dues persones aguanten la corda ben tensa a l’alçada del pit.","Passeu per sota sense tocar-la i sense recolzar les mans a terra.","Cada ronda la corda baixa un pam. Qui la toca o cau, surt. Els que aguanten la corda van rotant."],"ordre":"Toca els jugadors en l’ordre en què cauen. L’últim que queda dret és el 1r.","inversa":true,"eines":["musica"],"rang":[10,30],"tastejada":true},{"id":"mimicaobjecte","nom":"Mímica exprés","fam":"mimica","lloc":"both","mat":[],"min":10,"energia":1,"escala":"torns","modes":["par","eq"],"mesura":"punts","unitat":"encerts","passos":["L’app treu les paraules: un mima i la resta de l'equip endevina. No es poden passar paraules sense endevinar.","Seixanta segons per torn, i el compte enrere el porta l’app.","Sense parlar, sense sons i sense assenyalar coses de la sala."],"ordre":"Els encerts de cada grup s'actualitzen cada cop que es clica a la següent paraula. ","dir":"desc","taula":true,"eines":["compte","sorteig"],"llista":"Mímica fàcil","segons":60,"mostraTorns":true,"tapat":true,"tastejada":true,"puntuaTorn":true},{"id":"ordenarse","nom":"Ordeneu-vos!","fam":"relleu","lloc":"both","mat":[],"min":5,"energia":2,"escala":"simultani","modes":["eq"],"mesura":"ordre","unitat":"s","passos":["L’app diu un criteri: per alçada, per edat, per lletra del nom...","L’equip s’ha d'ordenar correctament tan ràpid com pugui.","No es pot parlar: només gestos."],"ordre":"Tots alhora, clica en ordre l'ordre que acaben els grups.","dir":"asc","eines":["sorteig"],"llista":"Criteris","tastejada":true,"tapat":true},{"id":"panxacap","nom":"Panxa i cap alhora","fam":"destresa","lloc":"both","mat":[],"min":5,"energia":1,"escala":"simultani","modes":["ind"],"mesura":"temps","unitat":"s","passos":["Una mà fa cercles sobre la panxa (sense tocar-la); l’altra pica cops sobre el cap.","Cal mantenir els dos moviments alhora sense barrejar-los.","Qui es lia i fa el mateix amb les dues mans, queda fora."],"ordre":"Per torns, engega el crono i para-ho quan es lia.","dir":"desc","taula":true,"eines":["crono"],"torns":true,"tastejada":true},{"id":"paraules","nom":"Paraules en cadena","fam":"endevinar","lloc":"both","mat":[],"min":8,"energia":1,"escala":"torns","modes":["ind"],"mesura":"ordre","unitat":"","passos":["L’app treu la categoria.","Per torns, cadascú diu una paraula nova que hi encaixi.","Qui repeteix o tarda més de deu segons, queda fora."],"ordre":"Toca els jugadors en l’ordre en què queden fora.","inversa":true,"taula":true,"eines":["sorteig"],"llista":"Categories","unic":true,"segons":5,"mostraTorns":true,"tastejada":true},{"id":"pedrapaper","nom":"Pedra, paper, tisores reial","fam":"reflex","lloc":"both","mat":[],"min":5,"energia":1,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["Tothom busca una parella i juga una partida a tres.","Qui perd es posa darrere del guanyador i l’anima cridant el seu nom.","Els guanyadors es tornen a aparellar fins que només en quedi un."],"ordre":"Toca els jugadors en l’ordre en què van perdent.","inversa":true,"taula":true,"tastejada":true},{"id":"petaglobus","nom":"Peta el globus","fam":"salt","lloc":"out","mat":["globus"],"min":6,"energia":3,"escala":"rondes","modes":["ind","eq"],"mesura":"ordre","unitat":"","passos":["Cadascú infla un globus i l'aguanta amb la mà.","A la senyal, cal petar els globus dels altres, o fer que se li escapi, sense perdre el propi. ","Qui se li peta o li cau a terra el globus, surt del terreny."],"ordre":"Toca els participants en l’ordre en què perden el globus.","inversa":true,"tastejada":true},{"id":"planxa","nom":"Planxa","fam":"forca","lloc":"both","mat":[],"min":5,"energia":3,"escala":"simultani","modes":["ind","eq"],"mesura":"temps","unitat":"s","passos":["Avantbraços i puntes dels peus a terra, esquena recta.","Tothom comença alhora.","T'elimines quan caus o els malucs pugen o baixen clarament."],"ordre":"Engega el crono i toca cadascú quan cau. Qui aguanta més, guanya.","dir":"desc","eines":["crono"],"tastejada":true},{"id":"sentadilles","nom":"Qui fa més sentadilles","fam":"forca","lloc":"both","mat":[],"min":5,"energia":3,"escala":"torns","modes":["ind","par","eq"],"mesura":"punts","unitat":"sentadilles","passos":["Trenta segons, i el compte enrere el porta l’app.","Cal baixar fins que les cuixes quedin planes i tornar a pujar del tot.","Compten només les sentadilles ben fetes."],"ordre":"Apunta les sentadilles de cada un.","dir":"desc","eines":["compte"],"segons":30,"mostraTorns":true,"tastejada":true},{"id":"quisoc","nom":"Qui sóc","fam":"endevinar","lloc":"both","mat":["paper"],"min":12,"energia":1,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["Cadascú escriu un personatge en un paper i l’enganxa al front del de la dreta.","Tothom ha d'intentar endevinar qui és, fent preguntes de si o no a la resta.","Per torns, si la resposta és sí, repeteix torn, sinó passa a la següent particpant."],"ordre":"Toca cadascú quan endevina el seu personatge.","taula":true,"tastejada":true},{"id":"cegues","nom":"Recorregut a cegues","fam":"tacte","lloc":"both","mat":[],"min":8,"energia":2,"escala":"torns","modes":["par","eq"],"mesura":"temps","unitat":"s","passos":["Marqueu un recorregut amb obstacles fets amb el que tingueu a mà.","Un porta els ulls tapats; l’altre el guia només amb la veu. Posar mocadors per no fer trampes si desconfieu dels vostres companys. ","Si toca un obstacle ha d'estar 3 segons parat abans de continuar."],"ordre":"Cronòmetre. Toca l’equip quan arriba. Guanya el que ho fa més ràpid.","dir":"asc","eines":["crono"],"torns":true,"tastejada":true},{"id":"relleuaigua","nom":"Relleu d’aigua","fam":"aigua","lloc":"out","mat":["galleda","gots"],"min":2,"energia":2,"escala":"simultani","modes":["eq"],"mesura":"ordre","unitat":"dits","passos":["Prepareu una galleda plena d'aigua a la sortida. Cada equip té un got buit i una galleda buida a 15 metres.","Feu relleus per omplir la galleda de l’altra banda amb el vostre got.","Teniu un minut per omplir al màxim. El compte enrere el porta l’app."],"ordre":"Mesura el nivell que ha aconseguit cada equip. Marca per ordre de més ple a menys","dir":"desc","eines":["compte"],"segons":60,"tastejada":true},{"id":"saltacorda","nom":"Salta la corda","fam":"salt","lloc":"out","mat":["corda"],"min":5,"energia":3,"escala":"torns","modes":["ind","eq","par"],"mesura":"punts","unitat":"salts","passos":["Dues persones fan girar la corda a ritme constant.","Cal saltar tants cops seguits com es pugui.","El torn s’acaba al primer error."],"ordre":"Apunta els salts de cada un.","dir":"desc","mostraTorns":true,"tastejada":true},{"id":"saltets","nom":"Salts sense parar","fam":"salt","lloc":"both","mat":[],"min":3,"energia":3,"escala":"simultani","modes":["ind"],"mesura":"punts","unitat":"salts","passos":["Quinze segons per fer tants salts com puguis.","Els peus han de sortir del terra clarament cada cop.","Algú compta els salts d’un company."],"ordre":"Apunta els salts de cada un.","dir":"desc","eines":["compte"],"segons":15,"mostraTorns":true,"tastejada":true},{"id":"toca","nom":"Toca el que digui","fam":"reflex","lloc":"both","mat":[],"min":6,"energia":3,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["L’app crida un color o un material: \"toca alguna cosa verda!\".","Tothom corre a tocar alguna cosa que ho compleixi.","L’últim que ho toca queda eliminat cada ronda."],"ordre":"Toca els jugadors en l’ordre en què van quedant eliminats.","inversa":true,"eines":["sorteig"],"llista":"ColorsIMaterials","tapat":true,"tastejada":true},{"id":"gots","nom":"Torre de gots","fam":"apilar","lloc":"both","mat":["gots"],"min":6,"energia":1,"escala":"torns","modes":["ind","eq"],"mesura":"temps","unitat":"s","passos":["Comença amb deu gots apilats en una sola torre.","L'objectiu és fer una piràmide de 4-3-2-1.","Completa la piràmide i tornar a apilar els gots en una sola torre. El temps para aquí."],"ordre":"Engega el cronòmetre i toca cadascú quan acaba. Menys temps, més punts.","dir":"asc","eines":["crono"],"torns":true,"tastejada":true},{"id":"torrepaper","nom":"Torre de paper","fam":"apilar","lloc":"in","mat":["paper"],"min":4,"energia":1,"escala":"simultani","modes":["eq","par","ind"],"mesura":"ordre","unitat":"cm","passos":["Cada equip/participant rep el mateix nombre de fulls de paper i res més.","Teniu dos minuts per construir la torre més alta, fent servir només els fulls de paper.","Ha d’aguantar-se dreta deu segons per comptar."],"ordre":"Guanya la torre més alta. Toca els jugadors en ordre de torre alta. ","dir":"desc","eines":["compte"],"segons":120,"tastejada":true},{"id":"mateixtemps","nom":"Tots alhora","fam":"cantar","lloc":"both","mat":[],"min":6,"energia":1,"escala":"rondes","modes":["ind","par","eq"],"mesura":"ordre","unitat":"","passos":["A la de tres, tothom diu en veu alta el nom d’un animal.","Els que hagin coincidit amb algú altre, se salven. Qui hagi dit un animal que no ha dit ningú més, queda fora. ","Aneu fent rondes sense repetir els animals."],"ordre":"Toca els jugadors en l’ordre en què queden sols amb la seva paraula. En cas d'anar per equips es competeix individualment. Quan quedin dos es juguen la primera posició a pedra, paper, tisores.","inversa":true,"taula":true,"tastejada":true},{"id":"mercat","nom":"Vaig anar al mercat","fam":"memoria","lloc":"both","mat":[],"min":8,"energia":1,"escala":"rondes","modes":["ind"],"mesura":"ordre","unitat":"","passos":["El primer diu \"vaig anar al mercat i vaig comprar...\" i una cosa.","Cadascú repeteix tota la llista en ordre i hi afegeix una cosa nova.","Qui s’equivoca o se salta alguna cosa, queda fora."],"ordre":"Toca els jugadors en l’ordre en què fallen la llista.","inversa":true,"taula":true,"mostraTorns":true,"tastejada":true},{"id":"vintipreguntes","nom":"Vint preguntes","fam":"buscar","lloc":"both","mat":[],"min":8,"energia":1,"escala":"torns","modes":["ind","eq","par"],"mesura":"punts","unitat":"preguntes","passos":["Un jugador o equip pensa en una cosa, un animal o un personatge. I l'apunta en un paper o al mòbil","La resta fa preguntes de sí o no per endevinar-ho.","Es compten quantes preguntes calen fins a encertar-ho."],"ordre":"Com més preguntes necessitin, millor. Apunta quantes n’ha calgut per a cada un. Guanya el que rebi més preguntes","dir":"desc","taula":true,"mostraTorns":true,"tastejada":true}];
+
+/* GENERAT amb l'editor · 2026-08-23 */
+const CONTINGUT={"Categories":[["Actors i actrius famosos","Fàcil"],["Animals amb banyes","Difícil"],["Animals amb quatre potes","Fàcil"],["Animals de granja","Difícil"],["Animals de zoo","Fàcil"],["Animals domèstics","Fàcil"],["Animals en perill d'extinció","Mitjà"],["Animals grans","Fàcil"],["Animals marins","Fàcil"],["Animals nocturns","Mitjà"],["Animals petits","Fàcil"],["Animals que fan por","Fàcil"],["Animals que hibernen","Difícil"],["Animals que neden","Fàcil"],["Animals que salten","Mitjà"],["Animals que volen","Fàcil"],["Animals salvatges","Fàcil"],["Aplicacions del mòbil","Fàcil"],["Arbres","Mitjà"],["Assignatures escolars","Difícil"],["Balls i danses","Mitjà"],["Begudes","Fàcil"],["Begudes sense alcohol","Mitjà"],["Cançons que tothom coneix","Fàcil"],["Cantants famosos","Fàcil"],["Capitals asiàtiques","Difícil"],["Capitals europees","Fàcil"],["Científics famosos","Mitjà"],["Ciutats amb metro","Mitjà"],["Ciutats amb platja","Fàcil"],["Ciutats catalanes","Fàcil"],["Ciutats del món","Fàcil"],["Ciutats espanyoles","Fàcil"],["Ciutats que has visitat","Mitjà"],["Cognoms catalans","Fàcil"],["Colors","Fàcil"],["Colors de l'arc de Sant Martí","Difícil"],["Comarques de Catalunya","Mitjà"],["Complements","Mitjà"],["Coses blanques","Fàcil"],["Coses blaves","Fàcil"],["Coses de fusta","Fàcil"],["Coses de metall","Fàcil"],["Coses de plàstic","Fàcil"],["Coses dolces","Fàcil"],["Coses negres","Fàcil"],["Coses picants","Difícil"],["Coses que brillen","Mitjà"],["Coses que caben a la mà","Fàcil"],["Coses que caben en una motxilla","Fàcil"],["Coses que endolles a l'endoll","Mitjà"],["Coses que enganxen","Mitjà"],["Coses que es compren","Fàcil"],["Coses que es couen al forn","Fàcil"],["Coses que es fan a l'aigua","Fàcil"],["Coses que es fan a la brasa","Mitjà"],["Coses que es fan amb les mans","Fàcil"],["Coses que es fan de vacances","Fàcil"],["Coses que es fan els diumenges","Fàcil"],["Coses que es fan en una festa","Fàcil"],["Coses que es mengen al cinema","Fàcil"],["Coses que es mengen amb cullera","Fàcil"],["Coses que es mengen amb les mans","Fàcil"],["Coses que es mengen fredes","Fàcil"],["Coses que es mengen per esmorzar","Fàcil"],["Coses que es poden doblegar","Fàcil"],["Coses que es poden llençar","Fàcil"],["Coses que es poden obrir","Fàcil"],["Coses que es porten a la maleta","Fàcil"],["Coses que es posen en un entrepà","Fàcil"],["Coses que es regalen","Fàcil"],["Coses que es trenquen fàcil","Fàcil"],["Coses que et fan feliç","Fàcil"],["Coses que et fan por","Fàcil"],["Coses que et fan riure","Fàcil"],["Coses que et poses al cap","Mitjà"],["Coses que et poses als peus","Fàcil"],["Coses que fa la gent al matí","Fàcil"],["Coses que fan els nens","Fàcil"],["Coses que fan llum","Fàcil"],["Coses que fan olor bona","Fàcil"],["Coses que fan por als nens","Fàcil"],["Coses que fan servei per escriure","Difícil"],["Coses que fan soroll","Fàcil"],["Coses que fas abans de dormir","Fàcil"],["Coses que fas cada dia","Fàcil"],["Coses que floten","Fàcil"],["Coses que giren","Mitjà"],["Coses que hi ha a la muntanya","Fàcil"],["Coses que hi ha a la platja","Fàcil"],["Coses que hi ha a un bany","Fàcil"],["Coses que hi ha a una cuina","Fàcil"],["Coses que hi ha al cel","Mitjà"],["Coses que hi ha dins un cotxe","Fàcil"],["Coses que hi ha en un aeroport","Mitjà"],["Coses que hi ha en un armari","Fàcil"],["Coses que hi ha en un dormitori","Fàcil"],["Coses que hi ha en un garatge","Fàcil"],["Coses que hi ha en un gimnàs","Mitjà"],["Coses que hi ha en un hospital","Mitjà"],["Coses que hi ha en un jardí","Fàcil"],["Coses que hi ha en un parc","Fàcil"],["Coses que hi ha en un poble","Fàcil"],["Coses que hi ha en un supermercat","Fàcil"],["Coses que hi ha en una escola","Fàcil"],["Coses que hi ha en una estació de tren","Mitjà"],["Coses que hi ha en una festa","Fàcil"],["Coses que hi ha en una festa d'aniversari","Fàcil"],["Coses que necessites per viatjar","Fàcil"],["Coses que penges a la paret","Mitjà"],["Coses que pesen menys d'un quilo","Fàcil"],["Coses que porta un ciclista","Mitjà"],["Coses que porten formatge","Fàcil"],["Coses que porten ou","Mitjà"],["Coses que porten piles","Mitjà"],["Coses que portes penjades","Mitjà"],["Coses que s'inflen","Difícil"],["Coses que tallen","Mitjà"],["Coses que trobes al bosc","Fàcil"],["Coses que trobes en una butxaca","Mitjà"],["Coses que van amb rodes","Mitjà"],["Coses que volen","Mitjà"],["Coses rodones","Fàcil"],["Coses salades","Fàcil"],["Coses transparents","Mitjà"],["Coses verdes","Fàcil"],["Coses vermelles","Fàcil"],["Curses ciclistes","Difícil"],["Deserts del món","Difícil"],["Dinosaures","Mitjà"],["Eines d'un calaix","Mitjà"],["Electrodomèstics","Mitjà"],["Elements químics","Difícil"],["Embotits","Difícil"],["Emocions i sentiments","Mitjà"],["Equips de la Lliga","Difícil"],["Escriptors","Mitjà"],["Espècies","Mitjà"],["Esports","Fàcil"],["Esports aquàtics","Difícil"],["Esports d'equip","Mitjà"],["Esports d'hivern","Difícil"],["Esports de combat","Difícil"],["Esports individuals","Mitjà"],["Esports olímpics","Mitjà"],["Esports que es fan amb pilota","Mitjà"],["Estadis de futbol","Difícil"],["Estats de la matèria","Difícil"],["Feines de casa","Fàcil"],["Fenòmens meteorològics","Mitjà"],["Festes populars catalanes","Difícil"],["Flors","Mitjà"],["Formatges","Mitjà"],["Formes geomètriques","Difícil"],["Fruites","Fàcil"],["Fruits secs","Difícil"],["Grups de música","Fàcil"],["Grups de música catalans","Mitjà"],["Illes","Mitjà"],["Ingredients d'una pizza","Mitjà"],["Insectes","Mitjà"],["Instruments de vent","Difícil"],["Instruments musicals","Mitjà"],["Invents importants","Mitjà"],["Jocs de taula","Mitjà"],["Jugadors de futbol famosos","Fàcil"],["Llibres famosos","Fàcil"],["Malalties comunes","Mitjà"],["Marques conegudes","Fàcil"],["Marques d'esport","Difícil"],["Marques de cotxes","Mitjà"],["Marques de moda","Mitjà"],["Marques de xocolata","Difícil"],["Mars i oceans","Difícil"],["Menjar ràpid","Mitjà"],["Menjars que t'agraden","Fàcil"],["Mitjans de transport","Mitjà"],["Mitjans de transport aquàtics","Difícil"],["Muntanyes dels Pirineus","Difícil"],["Museus","Difícil"],["Noms d'home","Fàcil"],["Noms de dona","Fàcil"],["Noms de gat","Fàcil"],["Noms de gos","Fàcil"],["Noms de nen","Fàcil"],["Noms de nena","Fàcil"],["Noms de sants","Fàcil"],["Ocells","Fàcil"],["Països d'Àfrica","Mitjà"],["Països d'Amèrica del Sud","Difícil"],["Països d'Europa","Fàcil"],["Països del món","Fàcil"],["Països sense sortida al mar","Difícil"],["Paraules amb accent","Fàcil"],["Paraules amb ela geminada","Difícil"],["Paraules amb ny","Mitjà"],["Paraules de més de tres síl·labes","Fàcil"],["Paraules que acaben en vocal","Fàcil"],["Paraules que comencen per A","Mitjà"],["Paraules que comencen per S","Mitjà"],["Paraules que rimen amb amor","Difícil"],["Parts d'un cotxe","Mitjà"],["Parts d'una planta","Difícil"],["Parts de la cara","Fàcil"],["Parts del cos","Fàcil"],["Peces de roba","Fàcil"],["Peixos i mariscs comestibles","Mitjà"],["Pel·lícules d'animació","Fàcil"],["Pel·lícules de por","Mitjà"],["Pel·lícules famoses","Fàcil"],["Personatges de contes","Fàcil"],["Personatges de dibuixos animats","Fàcil"],["Personatges històrics","Fàcil"],["Pintors famosos","Mitjà"],["Planetes i estrelles","Difícil"],["Plats amb pasta","Mitjà"],["Plats de restaurant","Fàcil"],["Plats típics catalans","Mitjà"],["Pobles de Catalunya","Fàcil"],["Pobles del Vallès","Difícil"],["Postres","Fàcil"],["Productes de neteja","Mitjà"],["Professions","Fàcil"],["Programes de televisió","Fàcil"],["Races de gos","Fàcil"],["Refranys catalans","Difícil"],["Rèptils","Difícil"],["Rius de la península","Difícil"],["Roba d'hivern","Mitjà"],["Roba de bany","Difícil"],["Salses","Mitjà"],["Seleccions de futbol","Mitjà"],["Sèries de televisió","Fàcil"],["Sopes i cremes","Mitjà"],["Superherois","Mitjà"],["Tipus de calçat","Difícil"],["Tipus de pa","Difícil"],["Verbs acabats en -ar","Fàcil"],["Verdures","Mitjà"],["Videojocs","Fàcil"],["Volcans","Difícil"]],"Mimica":["Abella","Àguila","Ampolla de cava","Anar a comprar amb gana","Anar al dentista","Anar de rebaixes el primer dia","Ànec","Aparcar en un lloc estret","Aprendre a conduir","Àrbitre","Arribar tard a una reunió","Aspiradora","Astronauta","Bàdminton","Balancí","Baldufa","Balena","Ballar amb algú que trepitja","Ballarí","Ballet","Barman","Bàscula","Bàsquet","Batedora","Bateria","Bibliotecari","Bitlles","Bomber","Bombolla de sabó","Boxa","Boxejador","Buidar el rentaplats","Buscar les claus per tota la casa","Caçar una mosca","Cadenat","Cafetera","Cambrer","Camell","Cangur","Cantar en un karaoke","Cargol","Carnisser","Carter","Cartògraf","Cavall","Cérvol","Ciclisme en pista","Ciclisme en pujada","Cocodril","Colar-se en una fila","Comprar en unes rebaixes plenes","Corda de saltar","Cranc","Cuiner","Curses d'obstacles","Dentista","Despertar-se amb una alarma insistent","Director d'orquestra","Dofí","Domador de lleons","Electricista","Elefant","Emprovar-se roba als provadors","Encendre una foguera","Enfilar una agulla","Eriçó","Escacs","Escalada","Escollir menú en un restaurant","Escombra","Escombrar el terra","Esgrima","Esquí","Esquirol","Fer cua a la ITV","Fer equilibris sobre una biga","Fer estiraments al matí","Fer la maleta a l'últim moment","Fer punteria amb una pilota","Fer règim en un aniversari","Fer un pastís","Fer un pícnic amb formigues","Fer-se un selfie de grup","Flamenc","Formiga","Fotògraf","Fregar els plats","Fuster","Futbol","Gall","Gallina","Gimnàstica rítmica","Girafa","Golf","Granota","Grapadora","Gronxador","Guineu","Guitarra","Halterofília","Handbol","Hipopòtam","Hoquei","Inflar un matalàs","Ioga","Ioió","Jardiner","Judo","Karate","L'últim dia de vacances","La primera cita","Llançament de pes","Llanterna","Lleó","Llop","Mag","Màquina de cosir","Martell","Massatgista","Mecànic","Menjar alguna cosa molt picant","Menjar un gelat que es fon","Mestre","Metge","Mico","Molí de cafè","Molinet de vent","Mosquit","Muntar un moble amb instruccions","Muntar una tenda de campanya","Muntar-se en una muntanya russa","Mussol","Natació sincronitzada","Netejar els vidres de casa","Obrir un paraigua amb vent","Obrir un pot que no cedeix","Ós","Ovella","Pagès","Paleta","Pallasso","Papallona","Paraigua","Passar per un detector a l'aeroport","Passejar un gos que estira","Pastisser","Patinatge artístic","Patinatge sobre gel","Peixater","Perdre el tren per poc","Perdre l'avió","Perdre's a la muntanya","Perruquer","Perseguir el barret que se'n va","Pescador","Pescar amb canya","Petanca","Pianista","Piano","Pilota de platja","Ping-pong","Pingüí","Pintar un sostre","Pintor","Piragüisme","Planxa","Policia","Pop","Porc","Portar moltes bosses de la compra","Posar-se lents de contacte","Prismàtics","Provar-se sabates massa petites","Pujar en una atracció de fira","Pujar per una corda","Pujar una escala molt llarga","Quedar-se sense bateria al mòbil","Quedar-se sense gasolina","Quedar-se tancat fora de casa","Ratolí","Ratolí d'ordinador","Regadora","Regar les plantes","Rellotge de cucut","Rem","Rentadora","Rinoceront","Rugbi","Sabater","Salt d'alçada","Salt de llargada","Salt de perxa","Salt de trampolí","Sastre","Semàfor","Serp","Serra","Socorrista","Surf","Tallar una ceba plorant","Tallar-se les ungles","Tauró","Telescopi","Tennis","Termòmetre","Tir amb arc","Tisores","Tobogan","Torero","Torradora","Tortuga","Treure una estella d'un dit","Trobar-se un ex pel carrer","Trompeta","Trucar i que no despengin","Un concert multitudinari","Un dinar de Nadal","Un dinar familiar interminable","Un embús de trànsit","Un examen sorpresa","Un partit als penals","Un primer dia de feina","Un sopar romàntic a la llum d'espelmes","Un tall de llum a casa","Un viatge en avió amb turbulències","Una entrevista de feina","Una excursió sota la pluja","Una mudança","Una nit sense poder dormir","Una revisió al metge","Una sessió de fotos oficial","Una tempesta sense paraigua","Vaca","Vela","Ventilador","Vidrier","Violinista","Voleibol","Waterpolo","Xiulet"],"Embarbussaments":[["Antonieta tonta, amb tanta tinta tota t'untes.","Difícil"],["Babau beu vi bo i viu bé.","Fàcil"],["Beu vi bo de Valls.","Fàcil"],["Bóta, picota, picotí de bóta. Qui no dirà bóta, picota, picotí de bóta, no beurà el vi de la bóta.","Mitjà"],["Ca la Clara és a la cala d'Alacant.","Fàcil"],["Carrega el carro, carreter, que si tu el carregues, jo el descarregaré.","Difícil"],["Congre amb canya i canya amb congre i congre amb canya.","Mitjà"],["De dins una caixa va sortir una bruixa que anava coixa per mor de sa cuixa.","Mitjà"],["Dóna a la dona el sabó bo.","Fàcil"],["Duc com puc un ruc a un duc rus mut.","Fàcil"],["Duc pa sec al sac, m'assec on sóc i el suco amb suc.","Difícil"],["El bel és ben bé d'un be.","Mitjà"],["El cel està enrajolat, qui el desenrajolarà? El desenrajolador que el desenrajoli bon desenrajolador serà.","Difícil"],["El gros gos ros no vol l'os tot sol. Vol un bombó bo com jo.","Mitjà"],["El nét va net.","Fàcil"],["Em pesa perquè no em pesa. Si em pesàs no em pesaria. I ara perquè no em pesa, tenc pesar de cada dia.","Difícil"],["En cap cap cap el que cap en aquest cap.","Difícil"],["En Ferran, ferrer feia fum i foc ferran ferro fort.","Mitjà"],["En Panxo va dir a en Pinxo: Vols que et punxi amb un punxó? I en Pinxo va dir a en Panxo: Punxa, però a sa panxa, no!","Mitjà"],["En Pere té una pera.","Mitjà"],["En Pere, Peret, pintor, premiat per Portugal, porta pots i potinguetes per posar pebre picant.","Fàcil"],["En quin tinter tens tinta, Anton?","Mitjà"],["Gloc-gloc, en Blai beu un glop.","Mitjà"],["Jo tenc una caixeta tan ben requinquilladeta que cap requinquillador no la requinquillarà millor.","Difícil"],["L'Alí Babà va dir: Va, Lilí, du vi. La Lilí li va dur vi bo de debò.","Difícil"],["La fada Flora fa una festa amb farina fina.","Fàcil"],["La nena porta la nina a la nona. Si la nena no és nana, no pot portar la nina a la nona.","Difícil"],["La nena rossa té una rosa roja.","Fàcil"],["M'han dit que tu has dit que jo he dit un dit que jo no he dit.","Difícil"],["Na Rita i na Rosa corren pes carrer. Per què corren? Jo no ho sé.","Mitjà"],["Paula, Paula, para la taula, para-la bé que ton pare ja ve.","Difícil"],["Pim, pam, sivella de plata, pim, pom, sivella de plom.","Fàcil"],["Plou poc però plou prou.","Fàcil"],["Plou poc, però per lo poc que plou, plou prou.","Mitjà"],["Prou plou, però plou poc.","Fàcil"],["Què fas, Quica? Cont quantes coques queden.","Mitjà"],["Que fi fa el cafè el cafeter Delfí.","Fàcil"],["Que no passa pel forat, cric, crac, catacrac.","Fàcil"],["Quin fum fa? Fa un fum fi.","Fàcil"],["Senyora, vinc de part de la senyora a veure si la senyora s'enyora o no s'enyora.","Mitjà"],["Setze agutzils s'han emmetzinat amb brots d'atzavara.","Difícil"],["Setze jutges d'un jutjat mengen fetge d'un penjat.","Difícil"],["Si hi ha neu, no hi aneu.","Fàcil"],["Si una serra serra un xiprer, sis serres serren sis xiprers.","Difícil"],["Tres tristos tigres corren per la selva.","Mitjà"],["Un caragol ben encaragolat, qui serà qui el desencaragolarà?","Mitjà"],["Un carro carregat de terra roja corria per la carretera de Randa i es carreter roegava un roegó de pa rostit.","Difícil"],["Un llépol enllepolit qui el desenllepolirà un bon desenllepolidor serà.","Difícil"],["Un ós menja un os.","Fàcil"],["Un pam, dos pams, tres pams, quatre pams, cinc pams.","Fàcil"],["Un pedaç desdingossat, qui serà qui el desdingossarà? Jo el desdingossaré, perquè el sé desdingossar bé.","Difícil"],["Un plat pla, blanc clar, ple de pebre negre està.","Mitjà"],["Un tigre, dos tigres, tres tigres.","Mitjà"],["Una boteta tota rodoneta, té vi, vi té; té tap, tap té.","Mitjà"],["Una bruixa ben embruixada, qui la desembruixarà? El desembruixador que la desembruixi bon desembruixador serà.","Difícil"],["Una cabra caga pebre negre.","Fàcil"],["Una ovella pelada, peluda, des cap en es cul peluda, té un anyellet pelat, pelut, des cap en es cul pelut.","Difícil"],["Vinc al bosc i busco vesc i visc del vesc que busco al bosc.","Fàcil"],["Visc al bosc i busco vesc i visc del vesc que busco al bosc.","Difícil"],["Vull volar amb un avió també amb una avioneta, anar i venir de pertot veure la mar blava i verda.","Mitjà"]],"Mímica fàcil":["Un elefant","Una girafa","Un pop","Una serp","Un cangur","Una aranya","Un cranc","Una tortuga","Un ocell volant","Un cavall","Un lleó","Una granota","Una piràmide","Un pont","Una torre","Una cadira","Una taula","Un arbre","Un cotxe","Un avió","Un vaixell","Un rellotge","Una casa","Una estrella","Un cor","Una escala","Un tobogan","Un semàfor","Una muntanya russa","Un tren","Una màquina de rentar","Un molí de vent","Una noria","Un robot gegant","Un castell de focs","Una font","Un partit de futbol","Una orquestra","Una carrera de relleus","Una foto de família","Un embós de cotxes","Una fila per pagar","Un ascensor ple","Un banc del parc","Una parada de bus","Una teranyina","Un pi de Nadal","Un formiguer"],"Nombres":["3","4","6","7","8","9"],"Criteris":["Concerts assistits durant aquest any","Distància entre el lloc de naixement i Barcelona (centre)","Escoltes/instituts on heu estudiat","Idiomes que parleu","Nombre de contactes guardats al mòbil","Nombre de cosins germans","Nombre de germans","Nombre de lletres del segon cognom","Nombre de lletres del vostre nom complet","Nombre de mesos que porteu treballant a l'empresa actual","Nombre de països europeus visitats","Nombre de vegades que heu anat a un casament","Nombre de vegades que heu canviat de ciutat/poble de residència","Temps que fa des de la primera publicació a Instagram"],"ColorsIMaterials":["Vermell","Blau","Verd","Groc","Taronja","Lila","Rosa","Negre","Blanc","Gris","Marró","Beix","Daurat","Platejat","Turquesa","Granat","Fúcsia","Verd llima","Blau marí","CorallFusta","Metall","Plàstic","Vidre","Paper","Cartró","Tela","Cuir","Pedra","Goma","Ceràmica","Formigó","Alumini","Acer","Suro","Cotó","Llana","Marbre","Rajola","Cautxú"],"Mimicaobjectes":["Clar! Et passo una bona llista d'objectes **molt fàcils de representar amb mímica**, sense números ni punts perquè ho puguis copiar directament:","Paraigua","Raspall de dents","Pinta","Assecador","Telèfon","Ordinador","Ratolí","Televisió","Comandament","Càmera","Ulleres","Rellotge","Motxilla","Maleta","Para-sol","Cadira","Taula","Llit","Coixí","Mirall","Llanterna","Espelma","Paraigües","Ampolla","Got","Tassa","Plat","Forquilla","Cullera","Ganivet","Paella","Olla","Batedora","Torradora","Microones","Nevera","Escombra","Fregona","Aspiradora","Cubell","Martell","Tornavís","Tisores","Serra","Regla","Llapis","Bolígraf","Goma d'esborrar","Llibre","Diari","Guitarra","Piano","Tambor","Micròfon","Pilota","Bicicleta","Patinet","Cotxe","Moto","Avió","Vaixell","Tren","Semàfor","Telèfon mòbil","Casc","Raqueta","Patins","Skate","Canya de pescar","Canya de caminar","Pala","Rasclet","Pinzell","Pistola d'aigua","Globus","Estel","Corda","Tenda de campanya","Sac de dormir","Motxilla de muntanya","Bastó","Barret","Gorra","Sabata","Mitjó","Sabó","Tovallola","Paper higiènic","Perfume","Desodorant","Raspall de cabell","Assecador de mans","Clau","Pany","Moneder","Cartera","Bitlletera","Ventall","Bastó de selfie","Auriculars","Comandament de videojoc","Consola","Ordinador portàtil","Impressora","Calculadora","Despertador","Binoculars","Telescopi","Megàfon","Extintor","Farmaciola","Termòmetre","Balança","Pilota de futbol","Pilota de bàsquet","Pilota de tennis","Bate de beisbol","Guant de boxa","Guant de cuina","Casc de bicicleta","Ulleres de sol","Ulleres de natació","Xancletes","Botes","Cordons","Cinturó","Corbata","Bufanda","Guants","Abric","Jaqueta","Bossa de mà","Cistella","Clauer","Targeta de crèdit","Bitllet","Moneda","Passaport","Entrada de concert","Mapa","Brúixola","GPS","Walkie-talkie","Altaveu","Carregador","Cable USB","Endoll","Bombeta","Ventilador","Radiador","Rellotge de sorra","Comandament de televisió","Comandament de consola","Teclat","Ratolí d'ordinador","Tauleta","Telèfon fix","Selfie stick","Trípode","Càmera de fotos","Càmera de vídeo","Lupa","Grapadora","Grapes","Celo","Cola","Sobre","Carpeta","Estoig","Retolador","Guix","Pissarra","Cúter","Paleta","Pistola de silicona","Trepant","Clau anglesa","Alicates","Cargol","Escala","Carretó","Mànega","Regadora","Tisores de podar","Test","Gerro","Florer","Planta","Arbre de Nadal","Encenedor","Fòsfor","Penjador","Cortina","Persiana","Estora","Manta","Llençol","Coixí de viatge","Banyador","Xiulet","Flotador","Ulleres de busseig","Tubo de busseig","Aletes","Crema solar","Galleda de platja","Pala de platja","Rasclet de platja","Castell de sorra","Cubell de gel","Tenda","Bastons de senderisme","Cantimplora","Xarxa de pescar","Monopatí","Skateboard","Roda","Volant","Retrovisor","Clau del cotxe","Bomba de bicicleta","Gat hidràulic","Senyal de trànsit","Con","Cons de trànsit","Carretó de supermercat","Cistella de supermercat","Caixa registradora","Maquineta de bitllets","Ascensor","Escala mecànica","Porta","Finestra","Timbre","Bústia","Cadenat","Maó","Maça","Super-soaker","Globús","Cometa","Hula hoop","Frisbee","Bumerang","Pala de pàdel","Xarxa de tennis","Bate de cricket","Golf","Pal de golf","Pilota de golf","Tirador","Diana","Arc","Fletxa","Maraca","Pandereta","Flauta","Harmònica","Saxòfon","Trompeta","Acordió","Disc de vinil","Ukelele"],"Mimica animal":["Abella","Àguila","Alpaca","Ànec","Aranya","Arna","Balena","Bou","Cabra","Caiman","Calamar","Camaleó","Camell","Canari","Cangur","Cargol","Castor","Cavall","Cavallet de mar","Cigonya","Cocodril","Colom","Conill","Corb","Cranc","Cuc de terra","Dofí","Dromedari","Elefant","Eriçó","Escarabat","Escorpí","Esquirol","Estrella de mar","Estruç","Euga","Falcó","Flama","Flamenc","Foca","Formiga","Gall","Gallina","Gamba","Gat","Gavina","Girafa","Goril·la","Gos","Granota","Gripau","Guepard","Guineu","Hiena","Hipopòtam","Iguana","Jaguar","Koala","Llagosta","Llangardaix","Lleó","Lleó marí","Lleopard","Llop","Marieta","Medusa","Mico","Morsa","Mosca","Mosquit","Mussol","Oca","Orangutan","Orca","Ornitorinc","Ós","Ós polar","Ovella","Panda","Panda vermell","Pantera","Papagai","Papallona","Peix","Perezós","Pingüí","Poni","Pop","Porc","Rata","Ratolí","Ratpenat","Rinoceront","Ruc","Salamandra","Serp","Suricata","Talp","Tauró","Tigre","Toro","Tortuga","Vaca","Vespa","Ximpanzé","Zebra"],"ParaulesProhibides":[["sí","no"],["jo","tu"],["i","o"],["això","allò"],["val","clar"],["home","dona"],["si us plau","gràcies"],["ai","uix"]],"FrasesMaleides":["un moment siusplau","què passa","és igual","vinga comença","et toca"]};
+
+/* Alertes de norma: normes sorpresa que l'app llança a mitja partida.
+   {A}/{B} = una parella de ParaulesProhibides · {F} = una frase de FrasesMaleides · {N} = un número a l'atzar (2-9).
+   "format":"eq" vol dir que només surt si es juga per equips. */
+const ALERTES=[{"id":"paraula","titol":"Paraula prohibida","cos":"D’ara fins al final de la partida no podreu dir «{A}» ni «{B}». Si ho diu, penitència a triar pel grup."},{"id":"ma","titol":"Mà maldestra","cos":"D’ara fins al final de la partida, feu servir només la mà no dominant per a tot el que calgui fer amb les mans."},{"id":"xiuxiueig","titol":"En veu baixa","cos":"Durant la pròxima prova, tothom ha de parlar només xiuxiuejant."},{"id":"robot","titol":"Veu de robot","cos":"Durant la pròxima prova, tothom ha de parlar amb veu de robot."},{"id":"frase","titol":"Frase maleïda","cos":"A partir d’ara, si algú diu «{F}» sense voler-ho, fa una penitència a triar pel grup."},{"id":"colzes","titol":"Salutació obligatòria","cos":"D’ara fins al final de la partida, cada cop que dos jugadors us trobeu de cara, heu de saludar-vos xocant els colzes abans de continuar amb res més."},{"id":"equipmut","titol":"Equip mut","format":"eq","cos":"Trieu un equip entre tots. Durant la pròxima prova, aquest equip no pot parlar gens: només gestos."},{"id":"numero","titol":"Número tabú","cos":"Trieu el número {N}. A partir d’ara, cada cop que algú el digui en veu alta, ha de fer un aplaudiment per sobre del cap abans de continuar."}];
+
+/* Sistema de pictogrames per famílies de prova.
+   26 famílies. Editables des de l’editor. Traç de 3.4, viewBox 48. */
+const PICTO = {
+  cursa:     '<circle cx="31" cy="12" r="5" fill="currentColor" stroke="none"/><path d="M30 18l-6 9 5 6-4 9M24 27l-9 5M28 21l9 4M27 22l-8-3"/>',
+  salt:      '<circle cx="24" cy="9" r="5" fill="currentColor" stroke="none"/><path d="M24 15v7M16 22h16l3 17H13z"/>',
+  equilibri: '<circle cx="24" cy="16" r="5" fill="currentColor" stroke="none"/><path d="M13 7h22M24 21v12l-5 9M24 33l5 9M17 26h14"/>',
+  punteria:  '<circle cx="30" cy="27" r="13"/><circle cx="30" cy="27" r="6"/><circle cx="30" cy="27" r="2" fill="currentColor" stroke="none"/><path d="M6 9l13 12"/>',
+  bufar:     '<circle cx="13" cy="21" r="7" fill="currentColor" stroke="none"/><path d="M22 21h5M22 15c4 0 5 2 8 2M22 27c4 0 5-2 8-2"/><circle cx="38" cy="21" r="5"/>',
+  apilar:    '<path d="M9 40h30M12 39l1-7h9l1 7M26 39l1-7h9l1 7M19 32l1-7h9l1 7"/>',
+  mimica:    '<circle cx="24" cy="12" r="5" fill="currentColor" stroke="none"/><path d="M24 18v12M24 21l-9-5M24 21l9-5M24 30l-5 12M24 30l5 12"/>',
+  endevinar: '<circle cx="19" cy="25" r="12"/><path d="M33 13c4-4 11-2 11 3s-5 4-5 8"/><circle cx="39" cy="32" r="2" fill="currentColor" stroke="none"/>',
+  forca:     '<path d="M7 35h34"/><circle cx="37" cy="20" r="4" fill="currentColor" stroke="none"/><path d="M33 22L14 30M18 30v5M28 27v6"/>',
+  aigua:     '<path d="M24 6s9 12 9 18a9 9 0 01-18 0c0-6 9-18 9-18z"/><path d="M11 41h26"/>',
+  corda:     '<path d="M5 13h38"/><path d="M13 42c6-15 18-15 24 0"/><circle cx="25" cy="24" r="4" fill="currentColor" stroke="none"/>',
+  memoria:   '<circle cx="16" cy="16" r="4.5" fill="currentColor" stroke="none"/><circle cx="32" cy="16" r="4.5"/><circle cx="16" cy="32" r="4.5"/><circle cx="32" cy="32" r="4.5" fill="currentColor" stroke="none"/>',
+  ball:      '<circle cx="19" cy="10" r="5" fill="currentColor" stroke="none"/><path d="M19 16l5 11-6 15M24 27l8 13M19 19l-9 5M21 20l11-6"/>',
+  destresa:  '<path d="M12 24h24l-4 15H16z"/><circle cx="24" cy="12" r="6"/><path d="M24 18v5"/>',
+  llancar:'<circle cx="13" cy="12" r="4.6" fill="currentColor" stroke="none"/><path d="M13 17v11l-4 12M13 28l5 12M13 20l8-5"/><path d="M25 13q11 2 15 14"/><circle cx="25" cy="12" r="3"/>',
+  atrapar:'<circle cx="24" cy="12" r="4.5"/><path d="M24 2v3M16 5l2 3M32 5l-2 3"/><path d="M11 41c0-8 6-14 13-14s13 6 13 14"/><path d="M10 41h28"/>',
+  girar:'<path d="M11 21a14 14 0 1 1 5 11"/><path d="M9 13l2 9 9-3"/><circle cx="25" cy="25" r="5" fill="currentColor" stroke="none"/><path d="M25 31v10"/>',
+  amagar:'<path d="M5 20h21v22H5z"/><circle cx="35" cy="15" r="5" fill="currentColor" stroke="none"/><path d="M35 21v9M27 30h9"/>',
+  buscar:'<circle cx="21" cy="20" r="12"/><path d="M30 29l11 11"/><path d="M16 16a7 7 0 0 1 5-2"/>',
+  dibuixar:'<path d="M15 33l4 4 19-19-4-4z"/><path d="M15 33l-4 9 9-4"/><path d="M8 44h32"/>',
+  cantar:'<circle cx="15" cy="19" r="7" fill="currentColor" stroke="none"/><path d="M10 40h11"/><path d="M31 27v-9l9-2v9"/><circle cx="31" cy="28" r="3.4"/><circle cx="40" cy="26" r="3.4"/>',
+  escoltar:'<path d="M20 41c-6-4-9-11-9-17a10 10 0 0 1 20 0c0 4-6 5-6 9"/><path d="M35 15c3 4 3 13 0 17M41 10c4 6 4 21 0 27"/>',
+  tacte:'<path d="M16 42V25c0-3 4-3 4 0v-9c0-3 4-3 4 0v-4c0-3 4-3 4 0v4c0-3 4-3 4 0v15c0 7-4 11-8 11z"/><path d="M12 8l3 4M22 5v5M32 8l-3 4"/>',
+  relleu:'<circle cx="11" cy="12" r="4.5" fill="currentColor" stroke="none"/><path d="M11 17v10l-4 11M11 27l4 11"/><circle cx="37" cy="12" r="4.5" fill="currentColor" stroke="none"/><path d="M37 17v10l-4 11M37 27l4 11"/><path d="M16 22h16"/>',
+  reflex:'<path d="M27 4L13 25h9l-4 19 17-23h-9l5-17z"/><path d="M40 12h4M40 24h5M38 33l4 3"/>',
+  numeros:'<path d="M8 16l4-3v22"/><path d="M19 14h9l-9 18h10"/><path d="M34 14h9l-6 8h1a6 6 0 1 1-5 9"/>',
+};
+
+/* =========================================================
+   MOTOR
+   ========================================================= */
+const FORMATS = {
+  ind:{ etiqueta:'Individual', curt:'Individual' },
+  par:{ etiqueta:'Per parelles', curt:'Parelles' },
+  eq:{ etiqueta:'Per equips', curt:'Equips' },
+};
+const COLORS = ['var(--cobalt)','var(--magenta)','var(--canary)','var(--verd)'];
+const PASSES_MAX = 2;   // vegades que l'amfitrió pot descartar una prova per sessió
+
+const PRESETS = {
+  tots: { label:'Tothom puntua', gen:n => Array.from({length:n},(_,i)=>n-i) },
+  podi: { label:'Només el podi', gen:n => fit([5,3,1], n) },
+};
+const NOMS_EQUIP=['Els Lluços','Les Cabres','Els Pinyons','Les Bruixes','Els Grillons',
+  'Les Panteres','Els Sargantans','Les Guineus','Els Tabals','Les Espurnes','Els Bolets','Les Cigales'];
+function fit(base,n){ const o=[]; for(let i=0;i<n;i++) o.push(base[i]??0); return o; }
+
+function resoldre(files, punts){
+  const res={}, actius=files.filter(f=>!f.absent), grups=[];
+  actius.forEach((f,i)=>{ if(i===0||!f.tied) grups.push([f]); else grups[grups.length-1].push(f); });
+  let pos=1;
+  grups.forEach(g=>{
+    let m=0; for(let k=0;k<g.length;k++) m = Math.max(m, punts[pos-1+k] ?? 0);
+    g.forEach(f=> res[f.eid]={pos, pts:m, ex:g.length>1});
+    pos += g.length;
+  });
+  files.filter(f=>f.absent).forEach(f=> res[f.eid]={pos:null, pts:0, absent:true});
+  return res;
+}
+
+function classificacio(){
+  return S.equips.map(e=>{
+    let total=0, vic=0, sp=0, n=0;
+    S.jugades.forEach(r=>{
+      const x=r.res[e.id]; if(!x) return;
+      total+=x.pts; if(x.pos===1) vic++;
+      if(x.pos){ sp+=x.pos; n++; }
+    });
+    return {...e, total:Math.round(total*10)/10, vic, mitjana:n?sp/n:99};
+  }).sort((a,b)=> b.total-a.total || b.vic-a.vic || a.mitjana-b.mitjana || a.nom.localeCompare(b.nom,'ca'));
+}
+
+/* ---------- estat ---------- */
+const S = {
+  pantalla:'muntatge',
+  titol:'', format:'ind', nEquips:2,
+  gent:[], equips:[],
+  lloc:'both', sobretaula:false, inventari:new Set(MATERIAL_BASIC), propies:[],
+  rondes:5, preset:'tots', punts:[],
+  jugades:[], saltades:new Set(), passes:PASSES_MAX, usats:{},
+  provaActual:null, tirada:null, entrada:null, files:[],
+  tirant:false, seguentBib:1, data:new Date(), editaPunts:false, difSorteig:null, torn:0,
+  horariAlertes:null, properaAlerta:0, mostraAlerta:false, alertaActual:null,
+  normes:[], vistBenvinguda:false, pantallaAjustos:false, gestioGent:false, jugant:false,
+};
+let cronoInt=null, wakeLock=null, scrollAnt=0, pantallaAnt=null;
+
+const totsElsJocs = () => [...CATALEG, ...S.propies];
+const joc = id => totsElsJocs().find(g=>g.id===id);
+const teMaterial = g => g.mat.every(m=>S.inventari.has(m));
+const encaixaLloc = g => S.lloc==='both' || g.lloc==='both' || g.lloc===S.lloc;
+const encaixaFormat = g => g.modes.includes(S.format);
+const encaixaTaula = g => !S.sobretaula || g.taula;
+const disponibles = () => totsElsJocs().filter(g=>!g.alerta&&teMaterial(g)&&encaixaLloc(g)&&encaixaFormat(g)&&encaixaTaula(g));
+
+/* ---------- ALERTES DE NORMA ---------- */
+const triaAleatori = a => a[Math.floor(Math.random()*a.length)];
+function generaAlerta(def){
+  let cos=def.cos;
+  if(cos.includes('{A}')||cos.includes('{B}')){
+    const p=triaAleatori((typeof CONTINGUT!=='undefined'&&CONTINGUT.ParaulesProhibides&&CONTINGUT.ParaulesProhibides.length)?CONTINGUT.ParaulesProhibides:[['sí','no']]);
+    cos=cos.replace('{A}',p[0]).replace('{B}',p[1]);
+  }
+  if(cos.includes('{F}')){
+    const f=triaAleatori((typeof CONTINGUT!=='undefined'&&CONTINGUT.FrasesMaleides&&CONTINGUT.FrasesMaleides.length)?CONTINGUT.FrasesMaleides:['quin caloret']);
+    cos=cos.replace('{F}',f);
+  }
+  if(cos.includes('{N}')) cos=cos.replace('{N}',String(2+Math.floor(Math.random()*8)));
+  return {titol:def.titol, cos};
+}
+
+function planificaAlertes(){
+  const n = S.rondes<2 ? 0 : Math.max(1, Math.min(Math.ceil(S.rondes/4), S.rondes-1));
+  const rondesTotes = Array.from({length:S.rondes-1},(_,i)=>i+1);
+  const rondesTriades = barreja(rondesTotes).slice(0,n).sort((a,b)=>a-b);
+  const totes=(typeof ALERTES!=='undefined'&&ALERTES.length)?ALERTES:[{id:'paraula',titol:'Paraula prohibida',cos:'Poseu-vos d\u2019acord: d\u2019ara fins al final de la partida no podreu dir «{A}» ni «{B}».'}];
+  const tipusValids = barreja(totes.filter(a=>!a.format||a.format===S.format));
+  S.horariAlertes = rondesTriades.map((ronda,i)=>({ronda, tipus:(tipusValids[i%Math.max(tipusValids.length,1)]||totes[0]).id}));
+  S.properaAlerta = 0;
+}
+const bombo = () => disponibles().filter(g=>!S.jugades.some(r=>r.gid===g.id) && !S.saltades.has(g.id));
+const totalRondes = () => Math.min(S.rondes, disponibles().length);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const suf = p => p===1?'r':p===2?'n':p===3?'r':p===4?'t':'è';
+const picto = (fam,mida) => `<svg class="picto" viewBox="0 0 48 48" width="${mida}" height="${mida}" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">${PICTO[fam]||PICTO.destresa}</g></svg>`;
+const fmtT = ms => { const s=ms/1000; return s<60 ? s.toFixed(1)+'s' : Math.floor(s/60)+'\u2032'+String(Math.floor(s%60)).padStart(2,'0')+'\u2033'; };
+
+function ferEquips(){
+  const g=[...S.gent];
+  for(let i=g.length-1;i>0;i--){ const k=Math.floor(Math.random()*(i+1)); [g[i],g[k]]=[g[k],g[i]]; }
+  if(S.format==='ind'){
+    S.equips = g.sort((a,b)=>a.bib-b.bib).map((p,i)=>({id:'e'+p.id, nom:p.nom, membres:[p.id], c:i%4}));
+  } else if(S.format==='par'){
+    S.equips=[];
+    for(let i=0;i<g.length;i+=2){
+      if(!g[i+1] && S.equips.length){ S.equips[S.equips.length-1].membres.push(g[i].id); recalcNom(S.equips[S.equips.length-1]); break; }
+      const m=[g[i]]; if(g[i+1]) m.push(g[i+1]);
+      S.equips.push({id:'e'+i+'_'+Date.now(), nom:'', membres:m.map(x=>x.id), c:S.equips.length%4});
+      recalcNom(S.equips[S.equips.length-1]);
+    }
+  } else {
+    const n=Math.min(S.nEquips, Math.max(2,g.length));
+    const bossa=barrejaNoms([...NOMS_EQUIP]);
+    S.equips = Array.from({length:n},(_,i)=>({id:'eq'+i, nom:bossa[i]||('Equip '+'ABCD'[i]), membres:[], c:i%4}));
+    g.forEach((p,i)=> S.equips[i%n].membres.push(p.id));
+  }
+  ajustaPunts();
+}
+function barrejaNoms(a){ for(let i=a.length-1;i>0;i--){ const k=Math.floor(Math.random()*(i+1)); [a[i],a[k]]=[a[k],a[i]]; } return a; }
+function recalcNom(e){ e.nom = e.membres.map(id=>S.gent.find(p=>p.id===id)?.nom.split(' ')[0]).join(' + '); }
+function ajustaPunts(){
+  const n=Math.max(S.equips.length,3);
+  if(S.punts.length!==n) S.punts=PRESETS[S.preset].gen(n);
+}
+/* Durada: cada prova escala diferent amb la gent que hi ha */
+function tempsProva(g, unitats){
+  const n=Math.max(unitats,2), base=g.min||5;
+  let f = g.escala==='torns' ? n/6
+        : g.escala==='rondes' ? 1+0.10*(n-6)
+        : 1+0.02*(n-6);
+  return base*Math.min(3,Math.max(.5,f));
+}
+function duradaEstimada(){
+  const disp=disponibles(); if(!disp.length) return null;
+  const u=S.equips.length||S.gent.length||2;
+  const mitjana=disp.reduce((a,g)=>a+tempsProva(g,u),0)/disp.length;
+  const total=(mitjana+1.5)*totalRondes();
+  const r=x=>Math.max(5,Math.round(x/5)*5);
+  return [r(total*0.82), r(total*1.28)];
+}
+function ventall(){
+  const d=duradaEstimada();
+  return d ? (d[0]===d[1] ? `uns ${d[0]} min` : `${d[0]}\u2013${d[1]} min`) : '';
+}
+const CLAU_PREF='gimcana:preferencies';
+function desaPrefs(){
+  Magatzem.set(CLAU_PREF,{format:S.format,nEquips:S.nEquips,lloc:S.lloc,sobretaula:S.sobretaula,
+    inventari:[...S.inventari],rondes:S.rondes,preset:S.preset});
+}
+function membresDe(e){ return e.membres.map(id=>S.gent.find(p=>p.id===id)).filter(Boolean); }
+
+/* Manté la pantalla encesa durant la festa */
+async function mantenirPantalla(){
+  try{ if(typeof navigator!=='undefined' && 'wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
+}
+
+
+
+/* =========================================================
+   MAGATZEM · la sessió sobreviu a un refresc o a una bateria morta
+   Prova window.storage, després localStorage, i si res funciona, memòria.
+   ========================================================= */
+const CLAU='gimcana:sessio-v4';
+const MEM={};
+const Magatzem={
+  async get(k){
+    try{ if(typeof window!=='undefined'&&window.storage){ const r=await window.storage.get(k); return r&&r.value?JSON.parse(r.value):null; } }catch(e){}
+    try{ const v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){}
+    return MEM[k]!==undefined?MEM[k]:null;
+  },
+  async set(k,v){
+    const t=JSON.stringify(v);
+    try{ if(typeof window!=='undefined'&&window.storage){ await window.storage.set(k,t); return 'storage'; } }catch(e){}
+    try{ localStorage.setItem(k,t); return 'local'; }catch(e){}
+    MEM[k]=v; return 'memoria';
+  },
+  async esborra(k){
+    try{ if(typeof window!=='undefined'&&window.storage){ await window.storage.delete(k); return; } }catch(e){}
+    try{ localStorage.removeItem(k); return; }catch(e){}
+    delete MEM[k];
+  },
+};
+let pendent=null, tDesa=null;
+
+function serialitza(){
+  return { v:4, quan:Date.now(), titol:S.titol, format:S.format, nEquips:S.nEquips,
+    gent:S.gent, equips:S.equips, lloc:S.lloc, inventari:[...S.inventari], propies:S.propies,
+    rondes:S.rondes, preset:S.preset, punts:S.punts, jugades:S.jugades,
+    saltades:[...S.saltades], passes:S.passes, usats:S.usats,
+    seguentBib:S.seguentBib, data:S.data.toISOString(), pantalla:S.pantalla,
+    horariAlertes:S.horariAlertes, properaAlerta:S.properaAlerta, normes:S.normes };
+}
+function aplica(d){
+  S.titol=d.titol||''; S.format=d.format||'ind'; S.nEquips=d.nEquips||2;
+  S.gent=d.gent||[]; S.equips=d.equips||[]; S.lloc=d.lloc||'both';
+  S.inventari=new Set(d.inventari&&d.inventari.length?d.inventari:MATERIAL_BASIC);
+  S.propies=d.propies||[]; S.rondes=d.rondes||5; S.preset=d.preset||'tots';
+  if(!PRESETS[S.preset]) S.preset='tots';
+  S.punts=d.punts||[]; S.jugades=d.jugades||[]; S.saltades=new Set(d.saltades||[]);
+  S.passes=d.passes===undefined?PASSES_MAX:d.passes; S.usats=d.usats||{};
+  S.seguentBib=d.seguentBib||1; S.data=d.data?new Date(d.data):new Date();
+  S.horariAlertes=d.horariAlertes===undefined?null:d.horariAlertes; S.properaAlerta=d.properaAlerta||0;
+  S.normes=d.normes||[];
+  S.mostraAlerta=false; S.alertaActual=null;
+  /* una prova a mig apuntar no es recupera: es torna a l'últim punt segur */
+  S.provaActual=null; S.tirada=null; S.entrada=null; S.files=[];
+  S.pantalla = S.jugades.length ? 'classificacio' : 'muntatge';
+}
+function desa(){
+  if(tDesa) clearTimeout(tDesa);
+  tDesa=setTimeout(()=>{ if(S.gent.length) Magatzem.set(CLAU, serialitza()); }, 350);
+}
+function ferAra(ms){
+  const m=Math.round(ms/60000);
+  if(m<1) return 'fa un moment';
+  if(m<60) return `fa ${m} min`;
+  const h=Math.round(m/60);
+  return h<24 ? `fa ${h} h` : `fa ${Math.round(h/24)} dies`;
+}
+
+/* =========================================================
+   EINES DE PROVA · so, compte enrere, música i sorteig
+   L'estat viu fora del DOM, així sobreviu a cada re-render.
+   ========================================================= */
+let AC=null;
+function ac(){
+  try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)();
+       if(AC.state==='suspended') AC.resume(); }catch(e){}
+  return AC;
+}
+function to(freq,inici,durada,vol,tipus){
+  if(!pref('so',true)) return;
+  const c=ac(); if(!c) return;
+  const t=c.currentTime+inici, o=c.createOscillator(), g=c.createGain();
+  o.type=tipus||'square'; o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(vol,t+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+durada);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+durada+0.02);
+}
+const xiulet = ()=>{ to(1046,0,.16,.4); to(1318,.17,.16,.4); to(1568,.34,.34,.45); };
+const tic    = ()=> to(1760,0,.05,.16,'triangle');
+function parla(t){
+  try{
+    if(!pref('veuon',true)) return;
+    if(!window.speechSynthesis) return;
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang='ca-ES'; u.rate=.95;
+    const v=veuActual();
+    if(v) u.voice=v;
+    window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function veuKey(){ return 'gimcana_veu'; }
+function pref(k,def){ try{ const v=localStorage.getItem('gimcana_'+k); return v===null?def:v==='1'; }catch(e){ return def; } }
+function posaPref(k,v){ try{ localStorage.setItem('gimcana_'+k, v?'1':'0'); }catch(e){} }
+function vibra(patro){ if(!pref('vibra',true)) return; try{ navigator.vibrate&&navigator.vibrate(patro); }catch(e){} }
+function veuTriada(){ try{ return localStorage.getItem(veuKey())||''; }catch(e){ return ''; } }
+function triaVeu(uri){ try{ localStorage.setItem(veuKey(), uri||''); }catch(e){} }
+function veusCatalanes(){
+  if(!window.speechSynthesis) return [];
+  try{ return window.speechSynthesis.getVoices().filter(v=>v.lang && v.lang.toLowerCase().startsWith('ca')); }
+  catch(e){ return []; }
+}
+function veuActual(){
+  const veus=veusCatalanes(); if(!veus.length) return null;
+  const desitjada=veuTriada();
+  return veus.find(v=>v.voiceURI===desitjada) || veus.find(v=>v.lang==='ca-ES') || veus[0];
+}
+function flaix(){
+  const f=document.getElementById('flaix'); if(!f) return;
+  f.classList.add('on'); setTimeout(()=>f.classList.remove('on'),700);
+}
+
+const EI = {
+  gid:null,
+  compte:{int:null, restant:0, total:0, corrent:false, fet:false},
+  musica:{au:null, url:null, nom:'', timer:null, synth:null, sonant:false},
+  sorteig:{pool:[], i:0, llista:null, dif:null},
+  consig:{timer:null, fase:'aturat', actual:'', ant:'', restant:0, tic:null},
+};
+const txt = x => Array.isArray(x)?x[0]:x;
+const dif = x => Array.isArray(x)?x[1]:'';
+function barreja(a){ for(let i=a.length-1;i>0;i--){ const k=Math.floor(Math.random()*(i+1)); [a[i],a[k]]=[a[k],a[i]]; } return a; }
+
+function aturaEines(){
+  consigParaTot(true);
+  if(EI.compte.int){ clearInterval(EI.compte.int); EI.compte.int=null; }
+  EI.compte.corrent=false;
+  paraMusica(true);
+  EI.gid=null;
+}
+function preparaEines(g){
+  if(EI.gid===g.id) return;              // ja preparada: no rebaregis
+  aturaEines(); EI.gid=g.id;
+  if((g.eines||[]).includes('compte')){
+    EI.compte={int:null, restant:g.segons||60, total:g.segons||60, corrent:false, fet:false};
+  }
+  if((g.eines||[]).includes('sorteig')) iniSorteig(g, null, false);
+  if((g.eines||[]).includes('consignes')) EI.consig={timer:null,fase:'aturat',actual:'',ant:'',restant:0,tic:null};
+  if(g.mostraTorns) EI.torn=0;
+  if(g.puntuaTorn) EI.punts={};
+}
+
+/* ---- sorteig ---- */
+// quines dificultats existeixen realment a la llista
+function difsDe(llista){
+  const f=(typeof CONTINGUT!=='undefined'&&CONTINGUT[llista])||[];
+  const set=new Set(f.map(x=>dif(x)).filter(Boolean));
+  return ['Fàcil','Mitjà','Difícil'].filter(d=>set.has(d));
+}
+function calTriarDif(g){ return !!(g.unic && difsDe(g.llista).length); }
+function iniSorteig(g, difTriada, triat){
+  // les proves d'un sol element demanen la dificultat ABANS de revelar res
+  if(calTriarDif(g) && !triat){
+    EI.sorteig={pool:[], i:-1, llista:g.llista, dif:null, triat:false};
+    return;
+  }
+  const font=(typeof CONTINGUT!=='undefined' && CONTINGUT[g.llista])||[];
+  const dispDifs=difsDe(g.llista);
+  const d = (difTriada && dispDifs.includes(difTriada)) ? difTriada : null;
+  let base = d ? font.filter(x=>dif(x)===d) : font;
+  if(!S.usats[g.llista]) S.usats[g.llista]=[];
+  let pool=base.filter(x=>!S.usats[g.llista].includes(txt(x)));
+  if(!pool.length){ S.usats[g.llista]=[]; pool=[...base]; }
+  EI.sorteig={pool:barreja([...pool]), i:-1, llista:g.llista, dif:d, triat:true};
+  seguent();
+}
+function seguent(){
+  const s=EI.sorteig; if(!s.pool.length) return;
+  s.i++;
+  if(s.i>=s.pool.length){ S.usats[s.llista]=[]; barreja(s.pool); s.i=0; }
+  const a=s.pool[s.i];
+  if(!S.usats[s.llista].includes(txt(a))) S.usats[s.llista].push(txt(a));
+}
+const actual = () => EI.sorteig.pool[EI.sorteig.i];
+
+/* ---- compte enrere ---- */
+function marcaCompte(){
+  const el=document.getElementById('cd'); if(!el) return;
+  const r=Math.max(0,EI.compte.restant);
+  el.textContent = r>=60 ? Math.floor(r/60)+':'+String(r%60).padStart(2,'0') : String(r);
+  el.className='cd'+(EI.compte.corrent?' on':'')+(EI.compte.fet?' fi':'');
+}
+function compteGo(){
+  const C=EI.compte;
+  if(C.corrent){ clearInterval(C.int); C.int=null; C.corrent=false; pintaEines(); return; }
+  if(C.fet||C.restant<=0){ C.restant=C.total; C.fet=false; }
+  ac(); C.corrent=true;
+  C.int=setInterval(()=>{
+    C.restant--;
+    if(C.restant<=5&&C.restant>0) tic();
+    if(C.restant<=0){ clearInterval(C.int); C.int=null; C.corrent=false; C.fet=true; xiulet(); flaix(); vibra([90,60,90,60,180]);
+      const g0=joc(S.provaActual);
+      if(g0&&g0.mostraTorns){ const pool=S.equips.length?S.equips:S.gent; EI.torn=((EI.torn||0)+1)%Math.max(pool.length,1); EI.sorteig.vist=false;
+        C.restant=C.total; C.fet=false;            // llest per al torn següent
+        if((g0.eines||[]).includes('sorteig')) seguent(); }
+      if(S.pantalla==='entrada') render(); else pintaEines(); }
+    else marcaCompte();
+  },1000);
+  pintaEines();
+}
+
+/* ---- música ---- */
+function synthOn(estil){
+  const c=ac(); if(!c) return null;
+  if(estil==='mogut'){
+    /* baix marcant el ritme + melodia sincopada + xarles: fa moure els peus */
+    const baix=[130.81,0,130.81,0, 174.61,0,130.81,0, 155.56,0,155.56,0, 196.00,0,174.61,0];
+    const melo=[0,659.25,0,783.99, 880.00,0,783.99,659.25, 0,587.33,0,698.46, 783.99,0,659.25,0];
+    let i=0;
+    return setInterval(()=>{
+      const k=i%16;
+      if(baix[k]) to(baix[k],0,.13,.24,'square');
+      if(melo[k]) to(melo[k],0,.10,.12,'triangle');
+      if(k%4===0) to(1400,0,.025,.05,'square');
+      i++;
+    },125);
+  }
+  const n=[523.25,659.25,783.99,659.25,587.33,698.46,880,698.46,523.25,783.99,659.25,587.33];
+  let i=0;
+  return setInterval(()=>to(n[i++%n.length],0,.2,.13,'triangle'),195);
+}
+function paraMusica(silenci){
+  const M=EI.musica;
+  if(M.timer){ clearTimeout(M.timer); M.timer=null; }
+  if(M.synth){ clearInterval(M.synth); M.synth=null; }
+  if(M.au){ try{ M.au.pause(); }catch(e){} }
+  const anava=M.sonant; M.sonant=false;
+  if(anava&&!silenci){ xiulet(); flaix(); }
+}
+function musicaGo(g){
+  const M=EI.musica;
+  if(M.sonant){ paraMusica(); pintaEines(); return; }
+  ac();
+  if(M.au){ try{ M.au.currentTime=Math.random()*Math.max(0,(M.au.duration||30)-20); M.au.loop=true; M.au.play(); }catch(e){} }
+  else M.synth=synthOn(g.so);
+  M.sonant=true;
+  const [a,b]=g.rang||[8,25];
+  M.timer=setTimeout(()=>{ paraMusica(); pintaEines(); }, (a+Math.random()*(b-a))*1000);
+  pintaEines();
+}
+
+/* ---- pintat del panell ---- */
+const ETIQUETA={Categories:'Categoria',Mimica:'Paraula per mimar','Mímica fàcil':'Munteu...',Embarbussaments:'Embarbussament',Nombres:'Número maleït',Criteris:'Com us ordeneu',ColorsIMaterials:'Toqueu...'};
+/* CONSIGNES · música contínua i una ordre que canvia sola */
+function consigParaTot(silenci){
+  const C=EI.consig;
+  if(C.timer){ clearTimeout(C.timer); C.timer=null; }
+  if(C.tic){ clearInterval(C.tic); C.tic=null; }
+  const M=EI.musica;
+  if(M.synth){ clearInterval(M.synth); M.synth=null; }
+  if(M.au){ try{ M.au.pause(); }catch(e){} }
+  M.sonant=false;
+  const anava=C.fase!=='aturat';
+  C.fase='aturat'; C.restant=0;
+  if(anava && !silenci){ xiulet(); flaix(); }
+  try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){}
+}
+function consigMusica(g){
+  const C=EI.consig, M=EI.musica;
+  if(g.senseMusica){
+    M.sonant=false; C.fase='espera';
+  } else {
+    ac();
+    if(M.au){ try{ M.au.loop=true; M.au.play(); }catch(e){} } else M.synth=synthOn(g.so);
+    M.sonant=true; C.fase='musica';
+  }
+  const [a,b]=g.cicle||[10,15];
+  C.timer=setTimeout(()=>consigCanta(g), (a+Math.random()*(b-a))*1000);
+  pintaEines();
+}
+function consigCanta(g){
+  const C=EI.consig, M=EI.musica;
+  // atura la música de cop
+  if(M.synth){ clearInterval(M.synth); M.synth=null; }
+  if(M.au){ try{ M.au.pause(); }catch(e){} }
+  M.sonant=false;
+  // tria una consigna diferent de l'anterior
+  const llista=(g.consignes||[]).filter(x=>x!==C.ant);
+  const nova=llista.length?llista[Math.floor(Math.random()*llista.length)]:(g.consignes||[''])[0];
+  C.ant=nova; C.actual=nova; C.fase='consigna';
+  C.restant=g.pausa||5;
+  xiulet(); flaix(); parla(nova);
+  pintaEines();
+  if(C.tic) clearInterval(C.tic);
+  C.tic=setInterval(()=>{
+    C.restant--;
+    const el=document.getElementById('cg-c'); if(el) el.textContent=C.restant;
+    if(C.restant<=0){ clearInterval(C.tic); C.tic=null; consigMusica(g); }
+  },1000);
+}
+function consigGo(g){
+  if(EI.consig.fase!=='aturat'){ consigParaTot(); pintaEines(); return; }
+  EI.consig.ant=''; consigMusica(g);
+}
+/* s'ha acabat la prova? (a les d'eliminació, quan només en queda un dret) */
+function haAcabat(g){
+  const pend = S.equips.length - (S.entrada?S.entrada.taps.length:0);
+  return g.inversa ? pend<=1 : pend===0;
+}
+function pintaEines(){
+  const box=document.getElementById('eines'); if(!box) return;
+  const g=joc(S.provaActual); if(!g||(!g.eines&&!g.mostraTorns)){ box.innerHTML=''; return; }
+  let h='';
+  if(g.mostraTorns){
+    const pool = S.equips.length ? S.equips : S.gent;
+    if(pool.length){
+      const esEquip = S.format!=='ind';
+      const qui = pool[(EI.torn||0)%pool.length];
+      h+=`<div class="eina"${esEquip?` style="border-left-color:${COLORS[qui.c]}"`:''}><div class="eina-h"><span>Torn de</span>${g.puntuaTorn?`<span class="eina-t">${EI.punts[qui.id]||0} punts</span>`:''}</div>
+        <div class="srt llarg" style="background:${COLORS[qui.c]};color:var(--paper)">${esc(qui.nom)}</div>
+        ${(g.eines||[]).includes('compte')
+          ? `<p class="hint" style="margin:8px 0 0">Passa sol quan s\u2019acabi el temps.</p>`
+          : `<div class="eina-b"><button data-eina="torn-seg">Següent ${S.format==='ind'?'jugador':'equip'}</button></div>`}</div>`;
+    }
+  }
+  const tapatPend = !!g.tapat && (g.eines||[]).includes('compte') && (g.eines||[]).includes('sorteig') && !EI.sorteig.vist;
+  if((g.eines||[]).includes('compte')){
+    const C=EI.compte;
+    const poolC = S.equips.length?S.equips:S.gent;
+    const quiC = g.mostraTorns&&poolC.length ? poolC[(EI.torn||0)%poolC.length] : null;
+    h+=`<div class="eina"${quiC?` style="border-left-color:${COLORS[quiC.c]}"`:''}><div class="eina-h"><span>Compte enrere</span><span class="eina-t">${C.total} s</span></div>
+      <div class="cd${C.corrent?' on':''}${C.fet?' fi':''}"${quiC?` style="border-color:${COLORS[quiC.c]}"`:''} id="cd">${C.restant>=60?Math.floor(C.restant/60)+':'+String(C.restant%60).padStart(2,'0'):C.restant}</div>
+      <div class="eina-b"><button data-eina="compte" ${tapatPend?'disabled':''}>${C.corrent?'Atura':C.fet?'Un altre torn':'Comença'}</button>
+      <button data-eina="compte-rst" ${tapatPend?'disabled':''}>Reinicia</button></div>
+      ${tapatPend?`<p class="hint" style="margin-top:8px">Arrenca sol quan toqueu la paraula.</p>`:''}</div>`;
+  }
+  if((g.eines||[]).includes('sorteig')){
+    const difs=difsDe(g.llista);
+    // PORTA: encara no s'ha triat la dificultat -> no es revela res
+    if(calTriarDif(g) && !EI.sorteig.triat){
+      const compta=x=>((typeof CONTINGUT!=='undefined'&&CONTINGUT[g.llista])||[]).filter(y=>dif(y)===x).length;
+      h+=`<div class="eina porta"><div class="eina-h"><span>${esc(ETIQUETA[g.llista]||'Contingut')}</span>
+        <span class="eina-t">tria la dificultat</span></div>
+        <p class="porta-q">Quina dificultat voleu?</p>
+        <div class="portab">
+          ${difs.map(x=>`<button data-dif="${x}">${x} <i>${compta(x)}</i></button>`).join('')}
+          <button data-dif="*" class="qual">Qualsevol</button>
+        </div></div>`;
+    } else {
+      const a=actual(), t=a?txt(a):'—', d=a?dif(a):'';
+      let ordreLletres='';
+      if(g.id==='abecedari'){
+        const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        ordreLletres=`<div class="lletres"><p class="mini">Cadascú una lletra, per torns:</p>
+          ${S.equips.map((e,i)=>`<div class="ll"><span class="ll-k">${A[i%26]}</span><span>${esc(e.nom)}</span></div>`).join('')}</div>`;
+      }
+      // el selector en línia només per a les proves que treuen moltes paraules
+      const selDif = (!g.unic && difs.length) ? `<div class="difsel">
+        <button data-dif="*" aria-pressed="${!EI.sorteig.dif}">Totes</button>
+        ${difs.map(x=>`<button data-dif="${x}" aria-pressed="${EI.sorteig.dif===x}">${x}</button>`).join('')}</div>` : '';
+      h+=`<div class="eina"><div class="eina-h"><span>${esc(ETIQUETA[g.llista]||'Contingut')}</span>
+        <span class="eina-t">${EI.sorteig.dif?EI.sorteig.dif.toLowerCase():'qualsevol'}</span></div>
+        ${selDif}
+        ${g.tapat&&!EI.sorteig.vist
+          ? `<button class="srt tapat" data-eina="revela">Toca per veure-ho<br><i>quan tothom estigui a punt</i></button>`
+          : `<div class="srt ${t.length>44?'llarg':''}">${esc(t)}</div>`}
+        ${d&&!g.unic?`<span class="chip" style="margin-top:8px;display:inline-block">${esc(d)}</span>`:''}
+        ${ordreLletres}
+        ${g.unic?`<div class="eina-b"><button data-dif="!">Una altra categoria</button></div>
+                   <button class="link-sm" data-dif="?">‹ Canvia la dificultat</button>`
+                :`<div class="eina-b"><button data-eina="sorteig">Següent</button></div>`}</div>`;
+    }
+  }
+  if((g.eines||[]).includes('musica')){
+    const M=EI.musica, [a,b]=g.rang||[8,25];
+    h+=`<div class="eina"><div class="eina-h"><span>Música</span><span class="eina-t">para entre ${a} i ${b} s</span></div>
+      <div class="mus${M.sonant?' on':''}">${M.sonant?'SONA':'A punt'}</div>
+      <div class="eina-b"><button data-eina="musica">${M.sonant?'Para ara':'Engega'}</button></div>
+      <label class="fitxer">${M.nom?esc(M.nom):'Tria una cançó del mòbil'}<input type="file" accept="audio/*" id="mu-file"></label>
+      <p class="hint" style="margin-top:6px">${M.nom?'Toca-hi per canviar-la.':'Si no en tries cap, l\u2019app fa servir un so propi.'}</p></div>`;
+  }
+  if((g.eines||[]).includes('consignes')){
+    const C=EI.consig;
+    const cos = C.fase==='consigna'
+      ? `<div class="cg-box"><p class="cg-k">${esc(g.etiqueta||'Ara només...')}</p><p class="cg-n">${esc(C.actual)}</p>
+         <p class="cg-t">${g.senseMusica?'segueix':'torna la música'} en <b id="cg-c">${C.restant}</b> s</p></div>`
+      : C.fase==='musica'
+        ? `<div class="cg-box sona"><p class="cg-n">SONA LA MÚSICA</p><p class="cg-t">${esc(g.mentre||'balleu amb tot el cos')}</p></div>`
+        : C.fase==='espera'
+          ? `<div class="cg-box espera"><p class="cg-n">ATENTS...</p><p class="cg-t">${esc(g.mentre||'escolteu bé')}</p></div>`
+          : `<div class="cg-box off"><p class="cg-n">A PUNT</p><p class="cg-t">engega i ja va sol</p></div>`;
+    h+=`<div class="eina consig"><div class="eina-h"><span>Consignes</span><span class="eina-t">cada ${(g.cicle||[10,15]).join('-')} s</span></div>
+      ${cos}
+      <div class="eina-b"><button data-eina="consignes">${C.fase==='aturat'?'Engega':'Atura-ho'}</button></div>
+      <p class="hint" style="margin-top:6px">Va tot sol: ${g.senseMusica?'':'para la música, '}diu una ordre, espera ${g.pausa||5} s${g.senseMusica?'':' i torna la música'}.</p></div>`;
+  }
+  box.innerHTML=h;
+  const f=document.getElementById('mu-file');
+  if(f) f.onchange=ev=>{
+    const fx=ev.target.files&&ev.target.files[0]; if(!fx) return;
+    const M=EI.musica;
+    if(M.url) try{ URL.revokeObjectURL(M.url); }catch(e){}
+    M.url=URL.createObjectURL(fx); M.au=new Audio(M.url); M.au.loop=true; M.nom=fx.name;
+    pintaEines();
+  };
+}
+
+/* =========================================================
+   RENDER · conserva scroll i focus quan no canvia de pantalla
+   ========================================================= */
+const CLAUS_FOCUS=['mat','pt','preset','rondes','lloc','format','neq','num','pre'];
+/* ---------- NORMES ACTIVES ---------- */
+let normesObertes=false;
+function barraNormes(){
+  if(!S.normes.length || S.pantalla==='muntatge' || S.pantalla==='podi') return '';
+  const n=S.normes.length;
+  return `<div class="normes ${normesObertes?'obert':''}">
+    <button class="normes-h" data-normes="toggle">
+      <span class="normes-p">⚑</span>
+      <span class="normes-t">${n===1?'1 norma activa':n+' normes actives'}</span>
+      <span class="normes-x">${normesObertes?'▲':'▼'}</span></button>
+    ${normesObertes?`<div class="normes-l">${S.normes.map(x=>
+      `<div class="normes-i"><b>${esc(x.t)}</b><span>${esc(x.c)}</span></div>`).join('')}</div>`:''}
+  </div>`;
+}
+
+/* ---------- AJUSTOS ---------- */
+function benvingudaPendent(){
+  if(S.vistBenvinguda||S.pantalla!=='muntatge'||S.jugades.length) return false;
+  try{ return localStorage.getItem('gimcana_vist')!=='1'; }catch(e){ return !S.vistBenvinguda; }
+}
+function capaBenvinguda(){
+  return `<div class="alerta-bg" data-benv="tanca"><div class="alerta-box benv">
+    <p class="alerta-k">Benvinguts</p>
+    <h1>Benvinguts a<br>la Gimcana</h1>
+    <p>Configura la sessió i comença a disfrutar!</p>
+    <button class="btn-cta" style="width:100%;margin-top:14px" data-benv="tanca">Som-hi</button>
+  </div></div>`;
+}
+function capaAjustos(){
+  const veus=veusCatalanes();
+  return `<div class="alerta-bg" data-aj="tanca"><div class="alerta-box" style="text-align:left;max-width:400px">
+    <p class="alerta-k">Ajustos</p><h1 style="margin-bottom:14px">Com va l\u2019app</h1>
+    <div class="ajrow"><span>Vibració</span>
+      <button class="sw ${pref('vibra',true)?'on':''}" data-aj="vibra">${pref('vibra',true)?'Sí':'No'}</button></div>
+    <div class="ajrow"><span>Veu en alt</span>
+      <button class="sw ${pref('veuon',true)?'on':''}" data-aj="veuon">${pref('veuon',true)?'Sí':'No'}</button></div>
+    <div class="ajrow"><span>Sons i xiulets</span>
+      <button class="sw ${pref('so',true)?'on':''}" data-aj="so">${pref('so',true)?'Sí':'No'}</button></div>
+    ${veus.length?`<p class="hint" style="margin-top:14px">Veu del mòbil</p>
+      <div class="mgrid">${veus.map(v=>`<button class="mat" data-veu="${esc(v.voiceURI)}" aria-pressed="${v.voiceURI===veuTriada()}">
+        <span class="tick">${v.voiceURI===veuTriada()?'✓':''}</span><span>${esc(v.name)}</span></button>`).join('')}</div>`:''}
+    <button class="btn-cta" style="width:100%;margin-top:16px" data-aj="tanca">Fet</button>
+  </div></div>`;
+}
+
+function render(){
+  if(cronoInt){ clearInterval(cronoInt); cronoInt=null; }
+  if(S.pantalla!=='prova'&&S.pantalla!=='entrada') aturaEines();
+  const mateixa = pantallaAnt===S.pantalla;
+  const y = typeof window!=='undefined' ? (window.scrollY||0) : 0;
+  let selFocus=null;
+  const act = document.activeElement;
+  if(mateixa && act && act.dataset){
+    for(const k of CLAUS_FOCUS){
+      if(act.dataset[k]!==undefined){ selFocus=`[data-${k==='neq'?'neq':k}="${act.dataset[k]}"]`; break; }
+    }
+  }
+  const main=document.getElementById('main'), foot=document.getElementById('foot'), meta=document.getElementById('meta');
+  const esb={}; ['nouNom','nouJoc','titolSessio'].forEach(k=>{const el=document.getElementById(k); if(el) esb[k]=el.value;});
+  const P={muntatge:pMuntatge,carrusel:pCarrusel,prova:pProva,entrada:pEntrada,ajusta:pAjusta,classificacio:pClass,podi:pPodi}[S.pantalla];
+  const out=P();
+  main.innerHTML=(benvingudaPendent()?capaBenvinguda():'')+(S.pantallaAjustos?capaAjustos():'')+barraNormes()+out.html;
+  Object.entries(esb).forEach(([k,v])=>{const el=document.getElementById(k); if(el&&!el.value) el.value=v;});
+  foot.innerHTML=out.foot||'';
+  meta.textContent=out.meta||'';
+  if(mateixa){ window.scrollTo(0,y); requestAnimationFrame(()=>window.scrollTo(0,y)); }
+  else window.scrollTo(0,0);
+  if(selFocus){ const e=document.querySelector(selFocus); if(e&&e.focus) e.focus({preventScroll:true}); }
+  pantallaAnt=S.pantalla; scrollAnt=y;
+  if(out.after) out.after();
+  desa();
+}
+
+/* ---------- MUNTATGE ---------- */
+function pMuntatge(){
+  ajustaPunts();
+  const disp=disponibles(), nE=S.equips.length, nG=S.gent.length;
+  const prou = nG>=2 && nE>=2 && disp.length>=S.rondes;
+  const unitat = S.format==='ind'?'jugadors':'equips';
+
+  /* senyal qualitatiu: quant joc hi ha, sense dir mai quantes proves */
+  const marge = disp.length/Math.max(S.rondes,1);
+  const senyal = disp.length<S.rondes ? ['poc','Massa poc per jugar','Marca més coses o canvia de lloc.']
+    : marge<1.6 ? ['just','Just','Amb això hi ha per jugar, però es repetirà poc.']
+    : marge<3 ? ['be','Bé','Hi ha prou varietat per sorprendre-us.']
+    : ['molt','Molt per triar','Amb això no us l\u2019acabareu.'];
+
+  const resum = [
+    nG?`${nG} ${nG===1?'persona':'persones'}`:null,
+    nE>=2?FORMATS[S.format].curt.toLowerCase()+(S.format==='eq'?` de ${nE}`:''):null,
+    S.sobretaula?'sobretaula':{in:'a cobert',out:'a fora',both:'on sigui'}[S.lloc],
+    `${S.rondes} proves`,
+    prou?ventall():null,
+  ].filter(Boolean).join(' · ');
+
+  const fitxaEquip=(e,i)=>`<div class="eq" style="--c:${COLORS[e.c]}">
+      <div class="eq-h">
+        <span class="eq-d">${i+1}</span>
+        ${S.format==='ind'
+          ? `<span class="eq-n">${esc(e.nom)}</span>`
+          : `<input class="eq-in" type="text" data-eqnom="${e.id}" value="${esc(e.nom)}" maxlength="22" aria-label="Nom de l\u2019equip">`}
+      </div>
+      ${S.format!=='ind'?`<div class="eq-m">${membresDe(e).map(p=>`<button class="mem" data-mou-mem="${p.id}">${esc(p.nom)}</button>`).join('')}</div>`:''}
+    </div>`;
+
+  const frasePunts = (()=>{
+    const p=S.punts||[];
+    if(!p.length) return '';
+    const ultim=[...p].reverse().find(x=>x>0)||0;
+    return `El 1r fa ${p[0]} punts i l\u2019últim ${ultim}.`;
+  })();
+
+  return {
+   meta:`${nG} ${nG===1?'persona':'persones'}${nE>=2?' · '+nE+' '+unitat:''}`,
+   html:`
+   ${pendent?`<div class="repren">
+     <b>Tens una sessió a mig fer</b>
+     <p>${esc(pendent.titol||'Gimcana')} · ${(pendent.jugades||[]).length} proves jugades · ${ferAra(Date.now()-(pendent.quan||Date.now()))}</p>
+     <div class="repren-b"><button id="rp-si">Reprèn-la</button><button id="rp-no">Descarta</button></div>
+   </div>`:''}
+
+   <header class="cap">
+     <h1>Prepara<br>la gimcana</h1>
+     <input type="text" id="titolSessio" class="titol-in" placeholder="Nom de la sessió" maxlength="34" value="${esc(S.titol)}">
+     <p class="resum" id="resum">${esc(resum||'Comença afegint qui hi juga')}</p>
+   </header>
+
+   <section class="bl">
+     <h2>Qui hi juga</h2>
+     ${nG?`<div class="plist">${S.gent.map(p=>`<div class="pill"><span class="bib">${p.bib}</span><span class="nm">${esc(p.nom)}</span><button class="btn-icon" data-del="${p.id}" aria-label="Treu ${esc(p.nom)}">×</button></div>`).join('')}</div>`
+        :`<div class="empty">Encara no hi ha ningú.</div>`}
+     <div class="row-input">
+       <input type="text" id="nouNom" placeholder="Nom, o enganxa\u2019n una llista" autocomplete="off">
+       <button id="afegeix">Afegeix</button>
+     </div>
+     <p class="hint">Pots enganxar diversos noms de cop, separats per comes o per línies.</p>
+   </section>
+
+   <section class="bl">
+     <h2>Format</h2>
+     <div class="seg">${Object.entries(FORMATS).map(([k,v])=>`<button data-format="${k}" aria-pressed="${S.format===k}">${v.curt}</button>`).join('')}</div>
+     ${S.format==='eq'?`<div class="seg sub">${[2,3,4].map(n=>`<button data-neq="${n}" aria-pressed="${S.nEquips===n}">${n} equips</button>`).join('')}</div>`:''}
+     ${nE?`<div class="eqs">${S.equips.map(fitxaEquip).join('')}</div>
+       <div class="row-b">
+         <button class="btn-sm" id="barrejaEq">Torna a repartir</button>
+         ${S.format==='eq'?`<button class="btn-sm" id="altresNoms">Altres noms</button>`:''}
+       </div>
+       ${S.format!=='ind'?`<p class="hint">Toca un nom per passar-lo a l\u2019equip següent. Els noms dels equips es poden escriure.</p>`:''}`:''}
+   </section>
+
+   <section class="bl">
+     <h2>On sou</h2>
+     <div class="seg">
+       <button data-lloc="in" aria-pressed="${S.lloc==='in'}">A cobert</button>
+       <button data-lloc="out" aria-pressed="${S.lloc==='out'}">A fora</button>
+       <button data-lloc="both" aria-pressed="${S.lloc==='both'}">Tant se val</button>
+     </div>
+     <button class="taula-t ${S.sobretaula?'on':''}" data-taula="1" aria-pressed="${S.sobretaula}">
+       <span class="tick">${S.sobretaula?'✓':''}</span>
+       <span><b>Mode sobretaula</b> · només proves per fer assegut, sense aixecar-se</span>
+     </button>
+   </section>
+
+   <section class="bl">
+     <h2>Què teniu a mà</h2>
+     <div class="pres">${PREDEFINITS.map((p,i)=>{
+        const igual = p.mat.length===S.inventari.size && p.mat.every(m=>S.inventari.has(m));
+        return `<button data-pre="${i}" aria-pressed="${igual}">${esc(p.nom)}</button>`;}).join('')}</div>
+     <div class="mgrid">${Object.entries(MATERIAL).map(([k,v])=>{
+        const on=S.inventari.has(k);
+        return `<button class="mat" data-mat="${k}" aria-pressed="${on}">
+          <span class="tick">${on?'✓':''}</span><span>${esc(v)}</span></button>`;}).join('')}</div>
+     <div class="senyal ${senyal[0]}"><b>${senyal[1]}</b><span>${senyal[2]}</span></div>
+   </section>
+
+   <section class="bl">
+     <h2>Quantes proves</h2>
+     <div class="seg">${[3,5,10].map(n=>`<button data-rondes="${n}" aria-pressed="${S.rondes===n}">${n}</button>`).join('')}</div>
+     ${prou?`<p class="durada"><b>${ventall()}</b><span>amb ${nE} ${unitat}</span></p>`:''}
+   </section>
+
+   <section class="bl">
+     <h2>Les proves</h2>
+     <div class="srp">
+       <div class="srp-i">?</div>
+       <div><b>Seran una sorpresa.</b>
+       <p>Cada ronda en surt una a l\u2019atzar i no se\u2019n repeteix cap. Només sortiran proves que es puguin fer amb el que has marcat i al lloc on sou.</p></div>
+     </div>
+     <div class="row-input">
+       <input type="text" id="nouJoc" placeholder="Afegeix una prova teva" maxlength="28" autocomplete="off">
+       <button id="afegeixJoc">Afegeix</button>
+     </div>
+     ${S.propies.length?`<p class="hint">Teves: ${S.propies.map(g=>esc(g.nom)).join(', ')}</p>`:''}
+   </section>
+
+   <section class="bl">
+     <h2>Veu de l\u2019app</h2>
+     <p class="hint">En algunes proves l\u2019app parla en veu alta. La veu surt del propi mòbil, no de l\u2019app: si en teniu diverses instal·lades, proveu-les i trieu la que soni més natural.</p>
+     <p class="hint">Com que encara no hi ha cap veu en català que s\u2019entengui prou bé, tot el que diu també queda escrit en pantalla — no cal fiar-se només de l\u2019oïda.</p>
+     <div class="mgrid" id="veulist">${veusCatalanes().length?veusCatalanes().map(v=>`
+       <button class="mat" data-veu="${esc(v.voiceURI)}" aria-pressed="${v.voiceURI===veuTriada()}">
+         <span class="tick">${v.voiceURI===veuTriada()?'✓':''}</span><span>${esc(v.name)}</span></button>`).join('')
+       :`<p class="hint">Encara no hi ha cap veu en català carregada. Toca «Actualitza» o mira els ajustos de veu del mòbil.</p>`}
+     </div>
+     <div class="row-b">
+       <button class="btn-sm" id="provaVeu">🔊 Prova-la</button>
+       <button class="btn-sm" id="refrescaVeus">Actualitza la llista</button>
+     </div>
+   </section>
+
+   <section class="bl">
+     <h2>Punts</h2>
+     <div class="seg">${Object.entries(PRESETS).map(([k,v])=>`<button data-preset="${k}" aria-pressed="${S.preset===k}">${v.label}</button>`).join('')}</div>
+     <p class="punts-f"><span>${frasePunts}</span><button class="btn-sm" id="edp">${S.editaPunts?'Amaga':'Ajusta-ho'}</button></p>
+     ${S.editaPunts?`<div class="ptab">${S.punts.map((v,i)=>`<div class="cell"><div class="lab">${i+1}${suf(i+1)}</div><input type="number" min="0" max="99" data-pt="${i}" value="${v}"></div>`).join('')}</div>
+       <p class="hint">Els empats es reparteixen la mitjana de les posicions que ocupen.</p>`:''}
+   </section>
+
+   ${!prou?`<div class="warn">${nG<2?'Calen com a mínim 2 participants. ':''}${nG>=2&&nE<2?`Amb ${nG} persones no es poden fer 2 ${S.format==='par'?'parelles':'equips'}. `:''}${nE>=2&&disp.length<S.rondes?`Amb el que has marcat no hi ha prou proves per fer-ne ${S.rondes}. ${S.sobretaula?'Prova de desactivar el mode sobretaula, ':''}marca més material, canvia el lloc o baixa el nombre de proves.`:''}</div>`:''}`,
+   foot:`<button class="btn-cta" id="comenca" ${prou?'':'disabled'}>Comença</button>`,
+   after(){
+     const n=document.getElementById('nouNom');
+     n.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); afegeixPersona(); } });
+     n.addEventListener('paste',()=>setTimeout(afegeixPersona,10));
+     document.getElementById('afegeix').onclick=afegeixPersona;
+     const j=document.getElementById('nouJoc');
+     j.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); afegeixJoc(); } });
+     document.getElementById('afegeixJoc').onclick=afegeixJoc;
+     document.getElementById('titolSessio').oninput=e=>{ S.titol=e.target.value; desa(); };
+     const ep=document.getElementById('edp');
+     if(ep) ep.onclick=()=>{ S.editaPunts=!S.editaPunts; render(); };
+     const pv=document.getElementById('provaVeu');
+     if(pv) pv.onclick=()=>parla('Aquesta és la veu que sentireu durant el joc.');
+     const rv=document.getElementById('refrescaVeus');
+     if(rv) rv.onclick=()=>render();
+     const rs=document.getElementById('rp-si');
+     if(rs) rs.onclick=()=>{ aplica(pendent); pendent=null; mantenirPantalla(); render(); };
+     const rn=document.getElementById('rp-no');
+     if(rn) rn.onclick=()=>{ pendent=null; Magatzem.esborra(CLAU); render(); };
+     const b=document.getElementById('barrejaEq'); if(b) b.onclick=()=>{ ferEquips(); render(); };
+     const an=document.getElementById('altresNoms');
+     if(an) an.onclick=()=>{ const bo=barrejaNoms([...NOMS_EQUIP]);
+       S.equips.forEach((e,i)=>e.nom=bo[i]||e.nom); render(); };
+     const c=document.getElementById('comenca');
+     if(c) c.onclick=()=>{ if(!S.titol.trim()) S.titol='Gimcana'; desaPrefs(); mantenirPantalla(); S.pantalla='carrusel'; render(); };
+   }};
+}
+
+/* refresca el resum i la durada sense reconstruir la pantalla */
+function refrescaResum(){
+  if(S.pantalla!=='muntatge') return;
+  const el=document.getElementById('resum'); if(!el) return;
+  const nG=S.gent.length, nE=S.equips.length;
+  const prou = nG>=2 && nE>=2 && disponibles().length>=S.rondes;
+  el.textContent=[
+    nG?`${nG} ${nG===1?'persona':'persones'}`:null,
+    nE>=2?FORMATS[S.format].curt.toLowerCase()+(S.format==='eq'?` de ${nE}`:''):null,
+    S.sobretaula?'sobretaula':{in:'a cobert',out:'a fora',both:'on sigui'}[S.lloc],
+    `${S.rondes} proves`,
+    prou?ventall():null,
+  ].filter(Boolean).join(' · ')||'Comença afegint qui hi juga';
+}
+
+function afegeixPersona(){
+  const el=document.getElementById('nouNom'); if(!el) return;
+  const trossos=(el.value||'').split(/[,;\n\t]+/).map(x=>x.trim()).filter(Boolean);
+  if(!trossos.length) return;
+  const ja=new Set(S.gent.map(p=>p.nom.toLowerCase()));
+  trossos.forEach(nom=>{
+    const n=nom.slice(0,16);
+    if(ja.has(n.toLowerCase())) return;
+    ja.add(n.toLowerCase());
+    S.gent.push({id:'p'+Date.now()+Math.random().toString(36).slice(2,5), nom:n, bib:S.seguentBib++});
+  });
+  el.value=''; ferEquips(); render();
+  const x=document.getElementById('nouNom'); if(x) x.focus();
+}
+function afegeixJoc(){
+  const el=document.getElementById('nouJoc'), nom=el.value.trim(); if(!nom) return;
+  S.propies.push({id:'x'+Date.now(), nom, fam:'destresa', lloc:'both', mat:[], min:5, energia:2,
+    modes:['ind','par','eq'], mesura:'ordre', unitat:'',
+    passos:['Aquesta prova l\u2019has afegit tu: les normes les poses tu.','Explica-les en veu alta abans de començar.','Deixa clar com es decideix qui guanya.'],
+    ordre:'Toca els participants en l\u2019ordre en què acaben.'});
+  el.value=''; render(); const x=document.getElementById('nouJoc'); if(x) x.focus();
+}
+
+/* ---------- CARRUSEL ----------
+   La tira barreja proves de tot el catàleg disponible amb repeticions,
+   així és impossible deduir quantes proves hi ha. */
+function construeixTirada(){
+  const pool=bombo(); if(!pool.length) return null;
+  const decoys=disponibles();
+  // evita que surtin dues proves seguides de la mateixa família, si hi ha alternativa
+  const ultima=S.jugades.length?joc(S.jugades[S.jugades.length-1].gid):null;
+  const altres=ultima?pool.filter(g=>g.fam!==ultima.fam):[];
+  const font=altres.length?altres:pool;
+  const objectiu=font[Math.floor(Math.random()*font.length)];
+  const IDX=24, tira=[];
+  for(let i=0;i<IDX;i++) tira.push(decoys[Math.floor(Math.random()*decoys.length)]);
+  tira.push(objectiu);
+  for(let i=0;i<6;i++) tira.push(decoys[Math.floor(Math.random()*decoys.length)]);
+  return {tira, idx:IDX, gid:objectiu.id};
+}
+function pCarrusel(){
+  if(!S.tirada) S.tirada=construeixTirada();
+  const T=S.tirada, ronda=S.jugades.length+1;
+  const cartes=T.tira.map((g,i)=>`<div class="card" data-i="${i}"><span class="card-f">${esc(g.fam)}</span><span class="card-p">${picto(g.fam,42)}</span><span class="card-n">${esc(g.nom)}</span></div>`).join('');
+  return {
+   meta:`prova ${ronda} de ${totalRondes()}`,
+   html:`<p class="eyebrow">${esc(S.titol)} · prova ${ronda} de ${totalRondes()}</p>
+   <h1>Quina<br>toca ara</h1>
+   <p class="lede">No ho sabreu fins que pari.</p>
+   <div class="carwrap">
+     <div class="car-mark"><span></span><span></span><span></span><span></span></div>
+     <div class="carrusel" id="car"><div class="car-track" id="track">${cartes}</div></div>
+   </div>`,
+   foot:`<button class="btn-cta" id="tira">Tira</button>`,
+   after(){
+     const car=document.getElementById('car'), tk=document.getElementById('track');
+     if(car&&tk&&tk.children.length){
+       const ini=tk.children[Math.min(3,tk.children.length-1)];
+       tk.style.transition='none';
+       tk.style.transform=`translateX(${car.clientWidth/2-(ini.offsetLeft+ini.offsetWidth/2)}px)`;
+       profunditat();
+     }
+     document.getElementById('tira').onclick=tirar;
+   }};
+}
+/* Cada carta es gira i s'allunya segons la distància al centre del visor.
+   Es recalcula per fotograma mentre la tira corre. */
+function profunditat(){
+  const car=document.getElementById('car'); if(!car) return;
+  const cx=car.getBoundingClientRect().left+car.clientWidth/2;
+  const cartes=car.querySelectorAll('.card');
+  for(const c of cartes){
+    if(c.classList.contains('guanyadora')){ c.style.transform=''; continue; }
+    const r=c.getBoundingClientRect();
+    if(r.right<-260||r.left>window.innerWidth+260){ c.style.opacity='0'; continue; }
+    const d=(r.left+r.width/2-cx)/car.clientWidth;      // -0.5 .. 0.5 aprox
+    const a=Math.min(Math.abs(d),1);
+    c.style.transform=`translateZ(${-250*a}px) rotateY(${-54*d}deg) scale(${1-.08*a})`;
+    c.style.opacity=String(1-.55*a);
+    c.style.filter=a>.25?`blur(${Math.min((a-.25)*5,2.2)}px)`:'';
+    c.style.zIndex=String(20-Math.round(a*20));
+  }
+}
+function tirar(){
+  if(S.tirant||!S.tirada) return;
+  S.tirant=true;
+  const b=document.getElementById('tira'); b.disabled=true; b.textContent='…';
+  const car=document.getElementById('car'), tk=document.getElementById('track');
+  const cards=[...tk.children], T=S.tirada;
+  const pas=cards.length>1 ? cards[1].offsetLeft-cards[0].offsetLeft : 178;
+  const jitter=(Math.random()*20)-10;
+  const desti=-(T.idx*pas)+(car.clientWidth-cards[0].offsetWidth)/2+jitter;
+  const lent = typeof window.matchMedia==='function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const acabar=()=>{
+    tk.classList.add('fet');
+    cards[T.idx].classList.add('guanyadora');
+    setTimeout(()=>{
+      S.tirant=false; S.provaActual=T.gid; S.tirada=null; S.pantalla='prova'; S.jugant=false;
+      if(S.horariAlertes===null) planificaAlertes();
+      const prop=S.horariAlertes[S.properaAlerta];
+      if(prop && S.jugades.length===prop.ronda){
+        const totes=(typeof ALERTES!=='undefined'&&ALERTES.length)?ALERTES:[];
+        const def=totes.find(a=>a.id===prop.tipus)||totes[0];
+        if(def){ S.alertaActual=generaAlerta(def); S.mostraAlerta=true; }
+        S.properaAlerta++;
+        S.normes.push({t:S.alertaActual.titol, c:S.alertaActual.cos}); vibra([140,80,140]);
+      }
+      render();
+    }, lent?200:950);
+  };
+  if(lent){ tk.style.transition='none'; tk.style.transform=`translateX(${desti}px)`; profunditat(); acabar(); }
+  else{
+    void tk.offsetWidth;
+    tk.style.transition='transform 3.8s cubic-bezier(.09,.72,.05,1)';
+    requestAnimationFrame(()=>{ tk.style.transform=`translateX(${desti}px)`; });
+    let corrent=true;
+    (function bucle(){ if(!corrent) return; profunditat(); requestAnimationFrame(bucle); })();
+    setTimeout(()=>{ corrent=false; profunditat(); },3900);
+    setTimeout(acabar,3900);
+  }
+}
+
+/* ---------- PROVA ---------- */
+function pProva(){
+  const g=joc(S.provaActual);
+  const mat=g.mat.length?g.mat.map(m=>MATERIAL[m]).join(' · '):'Res, només vosaltres';
+  const potSaltar = S.passes>0 && bombo().length>1;
+  const alerta = S.mostraAlerta && S.alertaActual ? `<div class="alerta-bg" data-alerta="tanca">
+      <div class="alerta-box">
+        <p class="alerta-k">Norma alert</p>
+        <h1>${esc(S.alertaActual.titol)}</h1>
+        <p>${esc(S.alertaActual.cos)}</p>
+        <p class="hint">No hi ha manera d\u2019aplicar-ho des de l\u2019app: és de paraula, i qui trenqui la norma, que ho pagui com decidiu.</p>
+        <button class="btn-cta" data-alerta="tanca">Entesos</button>
+      </div></div>` : '';
+  return {
+   meta:`prova ${S.jugades.length+1} de ${totalRondes()}`,
+   html:`${alerta}<p class="eyebrow">Prova ${S.jugades.length+1}</p>
+   <div class="gcard">
+     <div class="gc-p">${picto(g.fam,60)}</div>
+     <h1>${esc(g.nom)}</h1>
+     <div class="chips"><span class="chip fill">${g.min} min</span><span class="chip">${g.lloc==='in'?'Interior':g.lloc==='out'?'Exterior':'On vulgueu'}</span><span class="chip">${S.equips.length} ${S.format==='ind'?'jugadors':'equips'}</span></div>
+     <h2>Material</h2><p class="p14">${esc(mat)}</p>
+     <h2>Com es juga</h2><ol class="steps">${g.passos.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>
+     <div class="callout"><b>Com es puntua</b>${esc(g.ordre)}</div>
+   </div>
+   ${potSaltar?`<button class="btn-sm" id="salta">Aquesta no · en queden ${S.passes}</button>
+     <p class="hint">Per si algú està lesionat o no us convenç. Un cop descartada, no torna a sortir.</p>`:''}`,
+   foot:`<button class="btn-cta" data-joc="juga">Comença</button>`,
+   after(){
+     if(g.eines||g.mostraTorns){ preparaEines(g); pintaEines(); }
+     document.querySelectorAll('[data-alerta]').forEach(b=>b.onclick=()=>{ S.mostraAlerta=false; render(); });
+     const s=document.getElementById('salta');
+     if(s) s.onclick=()=>{ S.saltades.add(S.provaActual); S.passes--; S.tirada=null; S.pantalla='carrusel'; render(); };
+     const va=document.getElementById('va');
+     if(va) va.onclick=()=>{
+       const nums={};
+       if(g.puntuaTorn) (S.equips.length?S.equips:S.gent).forEach(p=>{ if(EI.punts[p.id]) nums[p.id]=String(EI.punts[p.id]); });
+       S.entrada={taps:[],t0:null,nums}; S.pantalla='entrada'; render();
+     };
+   }};
+}
+
+/* ---------- ENTRADA ---------- */
+function pEntrada(){
+  const g=joc(S.provaActual), E=S.entrada;
+  const tocats=E.taps.map(t=>t.eid), pendents=S.equips.filter(e=>!tocats.includes(e.id));
+  const esTemps=g.mesura==='temps', esPunts=g.mesura==='punts', corrent=esTemps&&E.t0!==null;
+  let cos='';
+  if(esPunts){
+    cos=`<div class="nums">${S.equips.map(e=>`<div class="numrow" style="--c:${COLORS[e.c]}">
+        <span class="eq-d">${S.equips.indexOf(e)+1}</span><span class="nm">${esc(e.nom)}</span>
+        ${g.puntuaTorn
+          ? `<span class="numval">${EI.punts[e.id]||0}</span>`
+          : `<button class="pm" data-pm="-|${e.id}" aria-label="Un menys">−</button>
+             <input type="number" inputmode="numeric" data-num="${e.id}" value="${E.nums[e.id]??''}" placeholder="0">
+             <button class="pm" data-pm="+|${e.id}" aria-label="Un més">+</button>`}
+        <span class="un">${esc(g.unitat)}</span></div>`).join('')}</div>
+      <p class="hint">${g.puntuaTorn?'Es compta sol, cada cop que premeu «Següent» a les Normes. No es pot editar aquí.':'S\u2019ordena de més a menys tot sol. Deixa-ho buit si algú no ha jugat.'}</p>
+      ${recordatoriPunts()}`;
+  } else if(esTemps && g.torns){
+    const fets=E.taps.map(t=>t.eid);
+    const actualJ=S.equips.find(e=>!fets.includes(e.id));
+    cos=`${E.taps.length?`<div class="tapped"><p class="mini">Temps de cada un</p>
+        ${E.taps.map((t,i)=>{const e=S.equips.find(x=>x.id===t.eid);
+          return `<div class="tr"><span class="tr-i">${i+1}</span><span class="nm">${esc(e.nom)}</span><span class="tr-t">${fmtT(t.ms)}</span></div>`;}).join('')}
+        <button class="btn-sm" id="desfes" style="margin-top:8px">Desfés l\u2019últim</button></div>`:''}
+      ${actualJ?`<div class="torn" style="--c:${COLORS[actualJ.c]}">
+        <p class="torn-h">Torn de</p><p class="torn-n">${esc(actualJ.nom)}</p>
+        <div class="crono ${corrent?'on':''}" id="crono">${corrent?fmtT(Date.now()-E.t0):'—'}</div>
+        ${E.t0===null
+          ? `<button class="btn-cta alt" id="engega" style="box-shadow:none;width:100%">Engega</button>`
+          : `<button class="btn-cta" id="paratorn" style="width:100%">Para i registra</button>`}
+      </div>`
+      :`<p class="tap-h">Ja han jugat tots. Mira l\u2019ordre.</p>`}`;
+  } else {
+    cos=`${esTemps?`<div class="crono ${corrent?'on':''}" id="crono">${corrent?fmtT(Date.now()-E.t0):'—'}</div>
+        <div class="cronobtn">${E.t0===null?`<button class="btn-cta alt" id="engega" style="box-shadow:none">Engega el cronòmetre</button>`:`<button class="btn-sm" id="reset">Reinicia</button>`}</div>`:''}
+      <p class="tap-h">${esTemps?'Toca cada un quan acabi.':g.inversa?'Toca cada un quan queda eliminat.':'Toca cada un a mesura que arriba.'}</p>
+      <div class="taps">${pendents.map(e=>`<button class="tap" data-tap="${e.id}" style="--c:${COLORS[e.c]}" ${esTemps&&!corrent?'disabled':''}>
+        <span class="eq-d">${S.equips.indexOf(e)+1}</span><span class="nm">${esc(e.nom)}</span></button>`).join('')}</div>
+      ${E.taps.length?`<div class="tapped"><p class="mini">${g.inversa?'Ordre d\u2019eliminació':'Ordre registrat'}</p>
+        ${E.taps.map((t,i)=>{const e=S.equips.find(x=>x.id===t.eid);
+          return `<div class="tr"><span class="tr-i">${i+1}</span><span class="nm">${esc(e.nom)}</span>${esTemps?`<span class="tr-t">${fmtT(t.ms)}</span>`:''}</div>`;}).join('')}
+        <button class="btn-sm" id="desfes" style="margin-top:8px">Desfés l\u2019últim</button></div>`:''}`;
+  }
+  const llest = esPunts ? (g.puntuaTorn || Object.values(E.nums).some(v=>v!==''&&v!==undefined)) : E.taps.length>0;
+  return {
+   meta:esc(g.nom),
+   html:`<div class="jugant-h"><button class="btn-sm" data-joc="normes">‹ Normes</button>
+      <span class="jugant-t">${esc(g.nom)}</span></div>
+      <div id="eines"></div>${cos}`,
+   foot:`<button class="btn-cta" id="cap" ${llest?'':'disabled'}>Veure l\u2019ordre</button>`,
+   after(){
+     if(g.eines||g.mostraTorns){ preparaEines(g); pintaEines(); }
+     const eng=document.getElementById('engega'); if(eng) eng.onclick=()=>{ S.entrada.t0=Date.now(); render(); };
+     const pt=document.getElementById('paratorn'); if(pt) pt.onclick=()=>{
+       const g2=joc(S.provaActual), E=S.entrada;
+       const fets=E.taps.map(t=>t.eid);
+       const actualJ=S.equips.find(e=>!fets.includes(e.id));
+       if(actualJ && E.t0){ E.taps.push({eid:actualJ.id, ms:Date.now()-E.t0}); }
+       E.t0=null; render();
+     };
+     const rs=document.getElementById('reset'); if(rs) rs.onclick=()=>{ S.entrada={taps:[],t0:null,nums:{}}; render(); };
+     const df=document.getElementById('desfes'); if(df) df.onclick=()=>{ S.entrada.taps.pop(); render(); };
+     document.getElementById('cap').onclick=()=>{
+       if(g.puntuaTorn) S.equips.forEach(p=>{ S.entrada.nums[p.id]=String(EI.punts[p.id]||0); });
+       construeixFiles(); S.pantalla='ajusta'; render();
+     };
+     if(corrent) arrencaCrono();
+   }};
+}
+
+function arrencaCrono(){
+  if(cronoInt){ clearInterval(cronoInt); cronoInt=null; }
+  cronoInt=setInterval(()=>{
+    const el=document.getElementById('crono');
+    if(el && S.entrada && S.entrada.t0) el.textContent=fmtT(Date.now()-S.entrada.t0);
+  },100);
+}
+/* l'últim ha tocat: el rellotge s'atura i es queda amb el temps final */
+function acabaCrono(){
+  if(cronoInt){ clearInterval(cronoInt); cronoInt=null; }
+  const el=document.getElementById('crono'); if(!el) return;
+  const t=S.entrada.taps.length?S.entrada.taps[S.entrada.taps.length-1].ms:0;
+  el.textContent=fmtT(t);
+  el.classList.remove('on'); el.classList.add('fi');
+}
+/* refresca botons i llista de tocats SENSE tocar el cronòmetre en marxa */
+function refrescaTaps(){
+  const g=joc(S.provaActual), E=S.entrada;
+  const esTemps=g.mesura==='temps';
+  const tocats=E.taps.map(t=>t.eid), pendents=S.equips.filter(e=>!tocats.includes(e.id));
+  const cTaps=document.querySelector('.taps');
+  if(cTaps) cTaps.innerHTML=pendents.map(e=>`<button class="tap" data-tap="${e.id}" style="--c:${COLORS[e.c]}">
+      <span class="eq-d">${S.equips.indexOf(e)+1}</span><span class="nm">${esc(e.nom)}</span></button>`).join('');
+  // llista de tocats
+  let cTap=document.querySelector('.tapped');
+  const htmlTap = E.taps.length ? `<p class="mini">${g.inversa?'Ordre d\u2019eliminació':'Ordre registrat'}</p>`
+      +E.taps.map((t,i)=>{const e=S.equips.find(x=>x.id===t.eid);
+        return `<div class="tr"><span class="tr-i">${i+1}</span><span class="nm">${esc(e.nom)}</span>${esTemps?`<span class="tr-t">${fmtT(t.ms)}</span>`:''}</div>`;}).join('')
+      +`<button class="btn-sm" id="desfes" style="margin-top:8px">Desfés l\u2019últim</button>` : '';
+  if(!cTap && htmlTap){ cTap=document.createElement('div'); cTap.className='tapped'; (cTaps&&cTaps.parentNode||document.getElementById('main')).appendChild(cTap); }
+  if(cTap) cTap.innerHTML=htmlTap;
+  const df=document.getElementById('desfes');
+  if(df) df.onclick=()=>{ S.entrada.taps.pop(); refrescaTaps(); };
+  const cap=document.getElementById('cap');
+  if(cap) cap.disabled = E.taps.length===0;
+  // si ja han tocat tots, el cronòmetre s'acaba; si es desfà, torna a comptar
+  if(esTemps && E.t0){
+    if(haAcabat(g)){ acabaCrono(); xiulet(); flaix(); }
+    else if(!cronoInt){ const el=document.getElementById('crono');
+      if(el) el.classList.remove('fi'), el.classList.add('on');
+      arrencaCrono(); }
+  }
+  // la música de consignes s'atura sola quan la prova s'ha acabat
+  if((g.eines||[]).includes('consignes') && EI.consig.fase!=='aturat' && haAcabat(g)){
+    consigParaTot(); pintaEines();
+  }
+}
+function construeixFiles(){
+  const g=joc(S.provaActual), E=S.entrada;
+  let ord=[];
+  if(g.mesura==='punts'){
+    // qui no ha modificat el número compta com a 0, però surt igualment
+    const val=e=>{ const v=E.nums[e.id]; return (v===''||v===undefined||isNaN(+v))?0:+v; };
+    const amb=[...S.equips];
+    amb.sort((a,b)=>val(b)-val(a));
+    ord=amb.map(e=>({eid:e.id, valor:val(e)+' '+g.unitat, cmp:val(e)}));
+  } else if(g.mesura==='temps'){
+    const t=[...E.taps]; t.sort((a,b)=> g.dir==='desc'?b.ms-a.ms:a.ms-b.ms);
+    ord=t.map(x=>({eid:x.eid, valor:fmtT(x.ms), cmp:x.ms}));
+  } else {
+    const t=g.inversa?[...E.taps].reverse():[...E.taps];
+    ord=t.map(x=>({eid:x.eid, valor:'', cmp:null}));
+  }
+  const dins=ord.map(o=>o.eid);
+  S.files=[...ord.map((o,i)=>({eid:o.eid,
+             tied: i>0 && o.cmp!==null && o.cmp===ord[i-1].cmp,
+             absent:false, valor:o.valor})),
+           ...S.equips.filter(e=>!dins.includes(e.id)).map(e=>({eid:e.id,tied:false,absent:true,valor:''}))];
+}
+
+function recordatoriPunts(){
+  const p=S.punts||[]; if(!p.length) return '';
+  return `<p class="mini valpos">${p.slice(0,4).map((v,i)=>`${i+1}${suf(i+1)} <b>${v}</b>`).join(' · ')}${p.length>4?' · la resta 0':''}</p>`;
+}
+
+/* ---------- AJUSTA ---------- */
+function pAjusta(){
+  const g=joc(S.provaActual), res=resoldre(S.files,S.punts), eq=id=>S.equips.find(e=>e.id===id);
+  return {
+   meta:esc(g.nom),
+   html:`<p class="eyebrow">${esc(g.nom)} · confirma</p><h1>Aquest és<br>l\u2019ordre</h1>
+   <p class="lede">Retoca-hi el que faci falta abans de sumar.</p>
+   ${S.files.map((f,i)=>{const e=eq(f.eid),r=res[f.eid];
+     return `<div class="orow ${f.tied?'tied':''} ${f.absent?'absent':''}" style="--c:${COLORS[e.c]}">
+       <span class="pos">${f.absent?'—':r.pos+suf(r.pos)+(r.ex?'=':'')}</span>
+       <span class="eq-d">${S.equips.indexOf(e)+1}</span>
+       <span class="nm">${esc(e.nom)}${f.valor?` <i class="val">${esc(f.valor)}</i>`:''}</span>
+       <span class="pts">${f.absent?'0':'+'+r.pts}</span>
+       <button class="tbtn" data-tie="${i}" aria-pressed="${f.tied}" ${i===0||f.absent?'disabled':''} title="Empat">=</button>
+       <button class="abtn" data-abs="${i}" aria-pressed="${f.absent}" title="No ha jugat">Ø</button>
+       <span class="stack"><button data-mou="${i}:-1" ${i===0?'disabled':''} aria-label="Amunt">▲</button><button data-mou="${i}:1" ${i===S.files.length-1?'disabled':''} aria-label="Avall">▼</button></span>
+     </div>`;}).join('')}
+   <p class="okey"><span>= empat amb el de dalt</span><span>Ø no ha jugat</span></p>`,
+   foot:`<button class="btn-cta ghost btn-sm" id="tornaEnt" style="flex:0 0 auto;font-size:13px">Enrere</button>
+         <button class="btn-cta" id="desa">Suma els punts</button>`,
+   after(){
+     document.getElementById('tornaEnt').onclick=()=>{ S.pantalla='entrada'; render(); };
+     document.getElementById('desa').onclick=()=>{
+       S.jugades.push({gid:S.provaActual, res:resoldre(S.files,S.punts)});
+       S.pantalla=(S.jugades.length>=totalRondes()||!bombo().length)?'podi':'classificacio'; render();
+     };
+   }};
+}
+
+/* ---------- CLASSIFICACIÓ ---------- */
+function pClass(){
+  const cl=classificacio(), ult=S.jugades[S.jugades.length-1];
+  return {
+   meta:`${S.jugades.length}/${totalRondes()}`,
+   html:`<p class="eyebrow">Després de ${esc(joc(ult.gid).nom)}</p><h1>Classificació</h1>
+   <p class="lede">Queden ${totalRondes()-S.jugades.length} proves.</p>
+   <div class="stand">${cl.map((e,i)=>{const x=ult.res[e.id];
+     return `<div class="srow ${i===0?'lead':''}" style="animation-delay:${i*45}ms">
+       <span class="rk">${i+1}${suf(i+1)}</span><span class="nm">${esc(e.nom)}</span>
+       <span class="dl">${x&&!x.absent?'+'+x.pts:x?'Ø':''}</span><span class="tt">${e.total}</span></div>`;}).join('')}</div>
+   ${S.gestioGent?gestioGentHtml():`<button class="link-sm" data-gg="obre" style="margin:14px auto 0">Ha arribat o marxat algú?</button>`}
+   <p class="mini">Desempat: punts, victòries, mitjana de posicions.</p>`,
+   foot:`<button class="btn-cta" id="seg">Següent prova</button>`,
+   after(){
+     document.getElementById('seg').onclick=()=>{ S.gestioGent=false; S.tirada=null; S.pantalla='carrusel'; render(); };
+     const inp=document.getElementById('ggNom');
+     if(inp) inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); afegeixTard(); } });
+     const b=document.getElementById('ggAfegeix'); if(b) b.onclick=afegeixTard;
+   }};
+}
+
+function gestioGentHtml(){
+  const unitat = S.format==='ind'?'jugadors':'equips';
+  return `<div class="ggpanel">
+    <h2>Qui hi juga</h2>
+    <p class="hint" style="margin:0 0 10px">Els punts ja guanyats no es toquen. Qui entri ara comença de zero.</p>
+    <div class="barra"><input id="ggNom" placeholder="Nom de qui arriba" maxlength="16" style="flex:1">
+      <button class="sm" id="ggAfegeix">Afegeix</button></div>
+    <div class="gglist">${S.equips.map(e=>`<div class="ggrow" style="--c:${COLORS[e.c]}">
+      <span class="nm">${esc(e.nom)}</span>
+      <button class="sm" data-gg="fora|${e.id}" style="border-color:var(--magenta);color:var(--magenta)">Marxa</button>
+    </div>`).join('')}</div>
+    <p class="hint">Ara mateix hi ha ${S.equips.length} ${unitat}.</p>
+    <button class="link-sm" data-gg="tanca" style="margin-top:8px">Tanca</button>
+  </div>`;
+}
+function afegeixTard(){
+  const el=document.getElementById('ggNom'); if(!el) return;
+  const n=(el.value||'').trim().slice(0,16); if(!n) return;
+  const p={id:'p'+Date.now()+Math.random().toString(36).slice(2,5), nom:n, bib:S.seguentBib++};
+  S.gent.push(p);
+  if(S.format==='ind') S.equips.push({id:p.id, nom:n, c:S.equips.length%COLORS.length, membres:[p.id]});
+  else { const petit=S.equips.slice().sort((a,b)=>(a.membres||[]).length-(b.membres||[]).length)[0];
+         if(petit){ petit.membres=petit.membres||[]; petit.membres.push(p.id); } }
+  el.value=''; vibra(12); render();
+}
+
+/* Dades per a la cinemàtica final. Només diu el que és cert:
+   si ningú destaca en un apartat, aquell titular no surt. */
+function titularsFinals(){
+  const cl=classificacio(), t=[];
+  if(!S.jugades.length||!cl.length) return t;
+  const maxV=Math.max(...cl.map(e=>e.vic));
+  if(maxV>0){ const q=cl.filter(e=>e.vic===maxV);
+    t.push({k:'Més victòries', v:q.map(e=>e.nom).join(' i '), d:`${maxV} ${maxV===1?'prova':'proves'}`}); }
+  const ultims={};
+  S.jugades.forEach(r=>{ let pitjor=null;
+    S.equips.forEach(e=>{ const x=r.res[e.id]; if(x&&x.pos&&(!pitjor||x.pos>pitjor.pos)) pitjor={id:e.id,pos:x.pos}; });
+    if(pitjor) ultims[pitjor.id]=(ultims[pitjor.id]||0)+1; });
+  const maxU=Math.max(0,...Object.values(ultims));
+  if(maxU>1){ const ids=Object.keys(ultims).filter(i=>ultims[i]===maxU);
+    const noms=ids.map(i=>(S.equips.find(e=>e.id===i)||{}).nom).filter(Boolean);
+    if(noms.length) t.push({k:'Ha patit més', v:noms.join(' i '), d:`${maxU} cops l\u2019últim`}); }
+  if(S.jugades.length>=4){
+    const mig=Math.floor(S.jugades.length/2); let millor=null;
+    S.equips.forEach(e=>{
+      const pos=r=>{const x=r.res[e.id]; return x&&x.pos?x.pos:null;};
+      const a=S.jugades.slice(0,mig).map(pos).filter(Boolean), b=S.jugades.slice(mig).map(pos).filter(Boolean);
+      if(a.length<2||b.length<2) return;
+      const mA=a.reduce((x,y)=>x+y,0)/a.length, mB=b.reduce((x,y)=>x+y,0)/b.length;
+      if(mA-mB>.7 && (!millor||mA-mB>millor.delta)) millor={nom:e.nom, delta:mA-mB};
+    });
+    if(millor) t.push({k:'La remuntada', v:millor.nom, d:'molt millor a la segona meitat'});
+  }
+  return t;
+}
+
+/* ---------- PODI ---------- */
+function pPodi(){
+  const cl=classificacio(), [a,b,c]=cl;
+  const pod=(e,rk,cls)=> e?`<div class="pod ${cls}"><span class="p-rk">${rk}</span><span class="p-nm">${esc(e.nom)}</span><span class="p-pt">${e.total}</span></div>`:'';
+  return {
+   meta:'final',
+   html:`<p class="eyebrow">${esc(S.titol)} · ${S.jugades.length} proves</p>
+   <h1>${esc(a.nom)}<br>guanya</h1>
+   <div class="podium">${pod(b,'2n','g2')}${pod(a,'1r','g1')}${pod(c,'3r','g3')}</div>
+   ${cl.length>3?`<div class="stand">${cl.slice(3).map((e,i)=>`<div class="srow"><span class="rk">${i+4}${suf(i+4)}</span><span class="nm">${esc(e.nom)}</span><span class="dl">${e.vic?e.vic+'×1r':''}</span><span class="tt">${e.total}</span></div>`).join('')}</div>`:''}
+   ${(()=>{const t=titularsFinals(); return t.length?`<div class="titulars">${t.map((x,i)=>
+      `<div class="tit" style="animation-delay:${420+i*520}ms"><span class="tit-k">${esc(x.k)}</span>
+        <span class="tit-v">${esc(x.v)}</span><span class="tit-d">${esc(x.d)}</span></div>`).join('')}</div>`:'';})()}
+   <div class="callout" style="margin-top:18px"><b>Proves</b>${S.jugades.map(r=>esc(joc(r.gid).nom)).join(' · ')}</div>
+   <div id="imgzone"></div>`,
+   foot:`<button class="btn-cta ghost btn-sm" id="nova" style="flex:0 0 auto;font-size:13px">Nova</button>
+         <button class="btn-cta alt" id="baixa">Baixa la imatge</button>
+         ${(typeof navigator!=='undefined'&&navigator.share)?`<button class="btn-cta btn-sm" id="comparteix" style="flex:0 0 auto;font-size:13px">Comparteix</button>`:''}`,
+   after(){
+     document.getElementById('baixa').onclick=baixaImatge;
+     const sh=document.getElementById('comparteix'); if(sh) sh.onclick=comparteixResultat;
+     vibra([90,60,90,60,180]);
+     document.getElementById('nova').onclick=()=>{
+       S.gent=[];S.equips=[];S.jugades=[];S.saltades=new Set();S.passes=PASSES_MAX;S.usats={};aturaEines();
+       S.seguentBib=1;S.provaActual=null;S.tirada=null;S.titol='';S.pantalla='muntatge';
+       S.horariAlertes=null;S.properaAlerta=0;S.alertaActual=null;S.mostraAlerta=false;S.normes=[];
+       pendent=null;Magatzem.esborra(CLAU);render(); };
+   }};
+}
+
+/* ---------- IMATGE ---------- */
+async function comparteixResultat(){
+  const cl=classificacio();
+  const text=`${S.titol||'Gimcana'}: guanya ${cl[0].nom} amb ${cl[0].total} punts.\n`+
+    cl.slice(0,5).map((e,i)=>`${i+1}. ${e.nom} — ${e.total}`).join('\n');
+  try{ await navigator.share({title:S.titol||'Gimcana', text}); }catch(e){}
+}
+async function baixaImatge(){
+  const btn=document.getElementById('baixa'); btn.disabled=true; btn.textContent='Dibuixant…';
+  try{ if(document.fonts&&document.fonts.ready) await document.fonts.ready; }catch(e){}
+  const W=1080,H=1350,cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+  const x=cv.getContext('2d'), INK='#14120E', PAPER='#FBF7EF';
+  x.fillStyle=PAPER; x.fillRect(0,0,W,H);
+  x.fillStyle='rgba(20,18,14,.07)';
+  for(let i=0;i<W;i+=14) for(let j=0;j<H;j+=14) x.fillRect(i,j,2,2);
+  x.fillStyle=INK; x.fillRect(0,0,W,96);
+  x.fillStyle=PAPER; x.font='700 40px Anton, Impact, sans-serif'; x.textBaseline='middle';
+  x.fillText('GIMCANA',56,50);
+  const d=S.data, dt=`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+  x.fillStyle='#FFC814'; x.font='700 24px "IBM Plex Mono", monospace'; x.textAlign='right';
+  x.fillText(dt,W-56,52); x.textAlign='left';
+  const cl=classificacio();
+  x.fillStyle=INK; x.font='400 84px Anton, Impact, sans-serif';
+  const linia=(t,max)=>{const w=[];let l='';t.split(' ').forEach(p=>{if(x.measureText(l+' '+p).width>max&&l){w.push(l);l=p;}else l=l?l+' '+p:p;});w.push(l);return w;};
+  let y=205; linia(S.titol.toUpperCase(),W-112).slice(0,2).forEach(l=>{x.fillText(l,56,y);y+=84;});
+  x.font='700 26px "IBM Plex Mono", monospace'; x.fillStyle='#1E3FCC';
+  x.fillText(`${FORMATS[S.format].etiqueta.toUpperCase()} · ${S.jugades.length} PROVES · ${S.gent.length} PARTICIPANTS`,56,y+8);
+  y+=70;
+  const top=y+330, amp=290, gap=22, x0=(W-(amp*3+gap*2))/2;
+  const ordre=[cl[1],cl[0],cl[2]], rk=['2n','1r','3r'], hh=[225,300,180], fons=['#F0E8D8','#FFC814','#F0E8D8'];
+  ordre.forEach((e,i)=>{ if(!e) return;
+    const bx=x0+i*(amp+gap), bh=hh[i], by=top-bh;
+    x.fillStyle=fons[i]; x.fillRect(bx,by,amp,bh);
+    x.strokeStyle=INK; x.lineWidth=4; x.strokeRect(bx,by,amp,bh);
+    x.fillStyle=INK; x.textAlign='center';
+    x.font='400 62px Anton, Impact, sans-serif'; x.fillText(rk[i],bx+amp/2,by+52);
+    x.font='400 34px Anton, Impact, sans-serif';
+    let nm=e.nom.toUpperCase(); while(x.measureText(nm).width>amp-24&&nm.length>3) nm=nm.slice(0,-1);
+    x.fillText(nm,bx+amp/2,by+bh-64);
+    x.font='700 30px "IBM Plex Mono", monospace'; x.fillText(e.total+' pts',bx+amp/2,by+bh-26);
+    x.textAlign='left';
+  });
+  let ty=top+62;
+  x.strokeStyle=INK; x.lineWidth=4; x.beginPath(); x.moveTo(56,ty); x.lineTo(W-56,ty); x.stroke(); ty+=14;
+  cl.forEach((e,i)=>{
+    if(ty>H-190) return;
+    x.fillStyle=INK; x.font='400 40px Anton, Impact, sans-serif'; x.fillText(`${i+1}${suf(i+1)}`,56,ty+30);
+    x.font='500 34px "Space Grotesk", system-ui, sans-serif';
+    let nm=e.nom; while(x.measureText(nm).width>560&&nm.length>3) nm=nm.slice(0,-1);
+    x.fillText(nm,150,ty+30);
+    x.font='700 34px "IBM Plex Mono", monospace'; x.textAlign='right'; x.fillText(String(e.total),W-56,ty+30);
+    if(e.vic){ x.font='700 22px "IBM Plex Mono", monospace'; x.fillStyle='#F0286E'; x.fillText(e.vic+'×1r',W-150,ty+30); }
+    x.textAlign='left'; ty+=56;
+    x.strokeStyle='rgba(20,18,14,.18)'; x.lineWidth=2; x.beginPath(); x.moveTo(56,ty-12); x.lineTo(W-56,ty-12); x.stroke();
+  });
+  x.fillStyle=INK; x.fillRect(0,H-120,W,120);
+  x.fillStyle=PAPER; x.font='500 22px "Space Grotesk", system-ui, sans-serif';
+  let proves=S.jugades.map(r=>joc(r.gid).nom).join(' · ');
+  while(x.measureText(proves).width>W-112&&proves.length>10) proves=proves.slice(0,-4)+'…';
+  x.fillText(proves,56,H-60);
+  cv.toBlob(blob=>{
+    const url=URL.createObjectURL(blob), zone=document.getElementById('imgzone');
+    zone.innerHTML=`<div class="imgout"><img src="${url}" alt="Resultats"><p class="hint">Al mòbil, prem i mantén la imatge per desar-la.</p></div>`;
+    const a=document.createElement('a');
+    a.href=url; a.download=(S.titol||'gimcana').replace(/[^\w\-]+/g,'_').toLowerCase()+'.png';
+    document.body.appendChild(a); try{ a.click(); }catch(e){} a.remove();
+    btn.disabled=false; btn.textContent='Baixa la imatge';
+    zone.scrollIntoView({behavior:'smooth',block:'center'});
+  },'image/png');
+}
+
+/* =========================================================
+   ESDEVENIMENTS
+   ========================================================= */
+document.addEventListener('click', e=>{
+  const dd=e.target.closest('[data-dif]');
+  if(dd){
+    const v=dd.dataset.dif, g=joc(S.provaActual);
+    if(v==='!'){ iniSorteig(g, EI.sorteig.dif, true); }          // una altra amb la mateixa dificultat
+    else if(v==='?'){ EI.sorteig.triat=false; }                   // torna al selector de dificultat
+    else { iniSorteig(g, v==='*'?null:v, true); }                 // tria feta
+    pintaEines(); return;
+  }
+  const ei=e.target.closest('[data-eina]');
+  if(ei){
+    const k=ei.dataset.eina, g=joc(S.provaActual);
+    if(k==='consignes'){ consigGo(g); }
+    else if(k==='sorteig'){
+      if(g.puntuaTorn){
+        const pool=S.equips.length?S.equips:S.gent, qui=pool[(EI.torn||0)%Math.max(pool.length,1)];
+        if(qui) EI.punts[qui.id]=(EI.punts[qui.id]||0)+1;
+      }
+      seguent(); if(S.pantalla==='entrada') render(); else pintaEines();
+    }
+    else if(k==='revela'){ EI.sorteig.vist=true;
+      // si la prova té compte enrere i està aturat, arrenca sol en revelar
+      if((g.eines||[]).includes('compte') && !EI.compte.corrent) compteGo();
+      else if(S.pantalla==='entrada') render(); else pintaEines(); }
+    else if(k==='compte'){ compteGo(); }
+    else if(k==='compte-rst'){ if(EI.compte.int) clearInterval(EI.compte.int);
+      EI.compte={...EI.compte,int:null,restant:EI.compte.total,corrent:false,fet:false};
+      if(g.puntuaTorn){ EI.punts={}; EI.torn=0; EI.sorteig.vist=false; }
+      if(S.pantalla==='entrada') render(); else pintaEines(); }
+    else if(k==='musica'){ musicaGo(g); }
+    else if(k==='torn-seg'){ vibra(35); const pool=S.equips.length?S.equips:S.gent; EI.torn=((EI.torn||0)+1)%Math.max(pool.length,1); EI.sorteig.vist=false;
+      if((g.eines||[]).includes('sorteig')) seguent();
+      if(S.pantalla==='entrada') render(); else pintaEines(); }
+    return;
+  }
+  const nb=e.target.closest('[data-normes]');
+  if(nb){ normesObertes=!normesObertes; render(); return; }
+  const aj=e.target.closest('[data-aj]');
+  if(aj){ const v=aj.dataset.aj;
+    if(v==='tanca'&&(aj.classList.contains('alerta-bg')||aj.classList.contains('btn-cta'))){ S.pantallaAjustos=false; render(); return; }
+    if(v==='vibra'||v==='so'||v==='veuon'){ posaPref(v,!pref(v,true)); if(v==='vibra') vibra(40); render(); }
+    return; }
+  const t=e.target.closest('[data-del],[data-format],[data-neq],[data-lloc],[data-taula],[data-mat],[data-pre],[data-rondes],[data-preset],[data-tie],[data-abs],[data-mou],[data-tap],[data-mou-mem],[data-veu],[data-benv],[data-gg],[data-pm],[data-joc]');
+  if(!t) return; const D=t.dataset;
+  if(D.veu!==undefined){ triaVeu(D.veu); render(); return; }
+  if(D.joc!==undefined){
+    if(D.joc==='juga'){
+      const g=joc(S.provaActual), nums={};
+      if(g.puntuaTorn) (S.equips.length?S.equips:S.gent).forEach(p=>{ if(EI.punts[p.id]) nums[p.id]=String(EI.punts[p.id]); });
+      S.entrada={taps:[],t0:null,nums}; S.pantalla='entrada';
+    } else S.pantalla='prova';
+    render(); return;
+  }
+  if(D.benv!==undefined){
+    S.vistBenvinguda=true; try{ localStorage.setItem('gimcana_vist','1'); }catch(e){}
+    render(); return;
+  }
+  if(D.gg!==undefined){
+    const [acc,eid]=D.gg.split('|');
+    if(acc==='obre'){ S.gestioGent=true; render(); return; }
+    if(acc==='tanca'){ S.gestioGent=false; render(); return; }
+    if(acc==='fora'){
+      S.equips=S.equips.filter(x=>x.id!==eid);
+      S.gent=S.gent.filter(p=>p.id!==eid);
+      S.equips.forEach(x=>{ if(x.membres) x.membres=x.membres.filter(m=>m!==eid); });
+      vibra(20); render(); return;
+    }
+  }
+  if(D.pm!==undefined){
+    const [sig,eid]=D.pm.split('|'); const E=S.entrada; if(!E) return;
+    const ara=+(E.nums[eid]||0), nou=Math.max(0, sig==='+'?ara+1:ara-1);
+    E.nums[eid]=String(nou); vibra(12); render(); return;
+  }
+  if(D.del){ S.gent=S.gent.filter(p=>p.id!==D.del); ferEquips(); render(); }
+  else if(D.format){ S.format=D.format; ferEquips(); render(); }
+  else if(D.neq){ S.nEquips=+D.neq; ferEquips(); render(); }
+  else if(D.lloc){ S.lloc=D.lloc; render(); }
+  else if(D.taula!==undefined){ S.sobretaula=!S.sobretaula; render(); }
+  else if(D.mat){ S.inventari.has(D.mat)?S.inventari.delete(D.mat):S.inventari.add(D.mat); render(); }
+  else if(D.pre!==undefined){ S.inventari=new Set(PREDEFINITS[+D.pre].mat); render(); }
+  else if(D.rondes!==undefined){ S.rondes=+D.rondes; render(); }
+  else if(D.preset){ S.preset=D.preset; S.punts=PRESETS[D.preset].gen(Math.max(S.equips.length,3)); render(); }
+  else if(D.tie!==undefined){ S.files[+D.tie].tied=!S.files[+D.tie].tied; render(); }
+  else if(D.abs!==undefined){ const i=+D.abs; S.files[i].absent=!S.files[i].absent; if(S.files[i].absent) S.files[i].tied=false; render(); }
+  else if(D.mou){ const [i,d]=D.mou.split(':').map(Number), k=i+d;
+    if(k<0||k>=S.files.length) return;
+    [S.files[i],S.files[k]]=[S.files[k],S.files[i]];
+    S.files.forEach((f,j)=>{ if(j===0) f.tied=false; }); render(); }
+  else if(D.tap){ const g=joc(S.provaActual);
+    S.entrada.taps.push({eid:D.tap, ms:g.mesura==='temps'&&S.entrada.t0?Date.now()-S.entrada.t0:0});
+    if(g.mesura==='temps' && S.entrada.t0){ refrescaTaps(); }
+    else {
+      if((g.eines||[]).includes('consignes') && EI.consig.fase!=='aturat' && haAcabat(g)) consigParaTot(true);
+      render();
+    } }
+  else if(D.mouMem){
+    const pid=D.mouMem, i=S.equips.findIndex(e=>e.membres.includes(pid));
+    if(i<0||S.equips.length<2) return;
+    const j=(i+1)%S.equips.length;
+    S.equips[i].membres=S.equips[i].membres.filter(m=>m!==pid);
+    S.equips[j].membres.push(pid);
+    if(S.format==='par') S.equips.forEach(recalcNom);
+    S.equips=S.equips.filter(e=>e.membres.length); render(); }
+});
+document.addEventListener('change', e=>{
+  const D=e.target.dataset;
+  if(D.pt!==undefined){ S.punts[+D.pt]=Math.max(0,Math.min(99,+e.target.value||0)); render(); }
+});
+document.addEventListener('input', e=>{
+  const D=e.target.dataset;
+  if(D.eqnom!==undefined){
+    const q=S.equips.find(x=>x.id===D.eqnom);
+    if(q){ q.nom=e.target.value; refrescaResum(); desa(); }
+    return;
+  }
+  if(D.num!==undefined){ S.entrada.nums[D.num]=e.target.value;
+    const b=document.getElementById('cap'); if(b) b.disabled=!Object.values(S.entrada.nums).some(v=>v!==''); }
+});
+/* avís abans de perdre una sessió a mig fer */
+if(typeof window!=='undefined' && window.addEventListener){
+  window.addEventListener('beforeunload', ev=>{
+    if(S.jugades.length && S.pantalla!=='podi' && S.pantalla!=='muntatge'){ ev.preventDefault(); ev.returnValue=''; }
+  });
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState==='visible' && S.pantalla!=='muntatge') mantenirPantalla();
+  });
+}
+/* les veus del navegador solen arribar amb retard: quan siguin a punt, refresca si toca */
+if(typeof window!=='undefined' && window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged=()=>{ if(S.pantalla==='muntatge') render(); };
+}
+
+(async ()=>{
+  try{
+    const d=await Magatzem.get(CLAU);
+    if(d && (d.gent||[]).length && (d.jugades||[]).length && d.pantalla!=='podi') pendent=d;
+    const pr=await Magatzem.get(CLAU_PREF);
+    if(pr){
+      if(FORMATS[pr.format]) S.format=pr.format;
+      if([2,3,4].includes(pr.nEquips)) S.nEquips=pr.nEquips;
+      if(['in','out','both'].includes(pr.lloc)) S.lloc=pr.lloc;
+      if(typeof pr.sobretaula==='boolean') S.sobretaula=pr.sobretaula;
+      if((pr.inventari||[]).length) S.inventari=new Set(pr.inventari.filter(m=>MATERIAL[m]));
+      if([3,5,10].includes(pr.rondes)) S.rondes=pr.rondes;
+      if(PRESETS[pr.preset]) S.preset=pr.preset;
+    }
+  }catch(e){}
+  render();
+})();
+
+</script>
+<script>
+/* Registra el service worker: fa que l'app funcioni sense connexió un cop carregada.
+   Si s'obre com a fitxer local (file://) no es registra i no passa res. */
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
